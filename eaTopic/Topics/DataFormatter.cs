@@ -19,22 +19,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.Serialization;
 
 namespace EaTopic.Topics
 {
 	/// <summary>
-	/// Topic type.
+	/// Topic data formatter.
+	/// We are not using built-in .NET serialization since we aim to make it compatible
+	/// with other languages.
 	/// </summary>
-	[Serializable]
-	public abstract class TopicType : ISerializable
+	public abstract class DataFormatter
 	{
-		protected TopicType(SerializationInfo info, StreamingContext context)
-		{
-		}
-
-		/// <inheritdoc/>
-		public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
+		public abstract byte[] SerializeData();
+		public abstract void DeserializeData(byte[] data);
 	}
 }
 

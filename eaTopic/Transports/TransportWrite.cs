@@ -27,7 +27,7 @@ namespace EaTopic.Transports
 	/// Transport layer to write / send data.
 	/// </summary>
 	public interface TransportWrite<T>
-		where T : TopicType
+		where T : DataFormatter
 	{
 		/// <summary>
 		/// Close this instance.

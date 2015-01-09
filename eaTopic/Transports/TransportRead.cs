@@ -27,7 +27,7 @@ namespace EaTopic.Transports
 	/// Transport read / receive layer.
 	/// </summary>
 	public interface TransportRead<T>
-		where T : TopicType
+		where T : DataFormatter
 	{
 		/// <summary>
 		/// Close this instance.

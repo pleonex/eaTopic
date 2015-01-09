@@ -32,14 +32,11 @@ namespace EaTopic.Transports
 	/// Example code from: http://www.jarloo.com/c-udp-multicasting-tutorial/
 	/// </summary>
 	public class UdpMulticastWriter<T> : TransportWrite<T>
-		where T : TopicType
+		where T : DataFormatter
 	{
 		IPAddress address;
 		IPEndPoint remotept;
 		UdpClient client;
-
-		BinaryFormatter binFormatter;
-		MemoryStream buffer;
 
 		public UdpMulticastWriter(string multicastIp, int port)
 		{
@@ -51,8 +48,6 @@ namespace EaTopic.Transports
 			client.JoinMulticastGroup(address);
 
 			remotept = new IPEndPoint(address, port);
-			buffer   = new MemoryStream();
-			binFormatter = new BinaryFormatter();
 		}
 
 		public void Close()
@@ -62,12 +57,8 @@ namespace EaTopic.Transports
 
 		public void Write(T data)
 		{
-			// Clean buffer and serialize class
-			buffer.SetLength(0);
-			binFormatter.Serialize(buffer, data);
-
 			// Send it
-			byte[] binData = buffer.ToArray();
+			byte[] binData = data.SerializeData();
 			client.Send(binData, binData.Length, remotept);
 		}
 	}
