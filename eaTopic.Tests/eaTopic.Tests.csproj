@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UdpMulticastSenderTest.cs" />
+    <Compile Include="UdpMulticastReceiverTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\eaTopic\eaTopic.csproj">

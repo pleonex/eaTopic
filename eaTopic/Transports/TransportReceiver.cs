@@ -37,7 +37,8 @@ namespace EaTopic.Transports
 		/// <summary>
 		/// Read an instance of TopicType from the network.
 		/// </summary>
-		T Read();
+		/// <param name="data">Data formatter to deserialize.</param>
+		void Read(T data);
 	}
 }
 
