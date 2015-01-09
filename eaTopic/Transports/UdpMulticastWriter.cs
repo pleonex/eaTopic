@@ -31,7 +31,7 @@ namespace EaTopic.Transports
 	/// UDP multicast writer.
 	/// Example code from: http://www.jarloo.com/c-udp-multicasting-tutorial/
 	/// </summary>
-	public class UdpMulticastWriter<T> : TransportWrite<T>
+	public class UdpMulticastWriter<T> : TransportSender<T>
 		where T : DataFormatter
 	{
 		IPAddress address;

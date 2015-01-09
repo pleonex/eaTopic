@@ -26,7 +26,7 @@ namespace EaTopic.Transports
 	/// <summary>
 	/// Transport layer to write / send data.
 	/// </summary>
-	public interface TransportWrite<T>
+	public interface TransportSender<T>
 		where T : DataFormatter
 	{
 		/// <summary>
