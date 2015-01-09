@@ -41,7 +41,7 @@ namespace EaTopic.Transports
 		public UdpMulticastWriter(string multicastIp, int port)
 		{
 			address = IPAddress.Parse(multicastIp);
-			if (!address.IsIPv6Multicast)
+			if (address.GetAddressBytes()[0] < 224 || address.GetAddressBytes()[1] > 239)
 				throw new ArgumentException("[eaTopic]: FATAL ERROR -> IP is not multicast");
 
 			client = new UdpClient();

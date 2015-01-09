@@ -40,4 +40,13 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UdpMulticastSenderTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\eaTopic\eaTopic.csproj">
+      <Project>{D677C7DA-D0F0-404B-976C-911C5346D38A}</Project>
+      <Name>eaTopic</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
