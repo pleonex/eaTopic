@@ -35,7 +35,7 @@ namespace EaTopic.Tests
 		const int Port = 2222;
 
 		Mock<DataFormatter> formatter;
-		UdpMulticastWriter<DataFormatter> sender;
+		UdpMulticastSender<DataFormatter> sender;
 
 		UdpClient client;
 		IPEndPoint localEp;
@@ -44,7 +44,7 @@ namespace EaTopic.Tests
 		public void Setup()
 		{
 			formatter = new Mock<DataFormatter>();
-			sender    = new UdpMulticastWriter<DataFormatter>(MulticastIp, Port);
+			sender    = new UdpMulticastSender<DataFormatter>(MulticastIp, Port);
 
 			client = new UdpClient();
 

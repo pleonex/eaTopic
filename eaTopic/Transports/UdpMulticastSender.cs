@@ -31,14 +31,14 @@ namespace EaTopic.Transports
 	/// UDP multicast writer.
 	/// Example code from: http://www.jarloo.com/c-udp-multicasting-tutorial/
 	/// </summary>
-	public class UdpMulticastWriter<T> : TransportSender<T>
+	public class UdpMulticastSender<T> : TransportSender<T>
 		where T : DataFormatter
 	{
 		IPAddress address;
 		IPEndPoint remotept;
 		UdpClient client;
 
-		public UdpMulticastWriter(string multicastIp, int port)
+		public UdpMulticastSender(string multicastIp, int port)
 		{
 			address = IPAddress.Parse(multicastIp);
 			if (address.GetAddressBytes()[0] < 224 || address.GetAddressBytes()[1] > 239)

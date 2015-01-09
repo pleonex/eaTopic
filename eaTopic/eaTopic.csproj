@@ -35,7 +35,7 @@
     <Compile Include="Transports\TransportSender.cs" />
     <Compile Include="Topics\DataFormatter.cs" />
     <Compile Include="Transports\TransportReceiver.cs" />
-    <Compile Include="Transports\UdpMulticastWriter.cs" />
+    <Compile Include="Transports\UdpMulticastSender.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
