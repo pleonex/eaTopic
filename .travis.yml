@@ -1,0 +1,11 @@
+## Travis CI Integration
+language: csharp
+solution: eaTopic.sln
+
+install:
+  - nuget restore eaTopic.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+
+script:
+  - xbuild /p:Configuration=Release eaTopic.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./eaTopic.Tests/bin/Release/eaTopic.Tests.dll
