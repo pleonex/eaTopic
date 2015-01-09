@@ -33,7 +33,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transports\TransportWrite.cs" />
-    <Compile Include="Topics\TopicType.cs" />
+    <Compile Include="Topics\DataFormatter.cs" />
     <Compile Include="Transports\TransportRead.cs" />
     <Compile Include="Transports\UdpMulticastWriter.cs" />
   </ItemGroup>
