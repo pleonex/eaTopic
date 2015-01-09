@@ -1,5 +1,5 @@
 ﻿//
-//  TopicType.cs
+//  TransportRead.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
@@ -19,17 +19,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Runtime.Serialization;
+using EaTopic.Topics;
 
-namespace EaTopic.Topics
+namespace EaTopic.Transports
 {
 	/// <summary>
-	/// Topic type.
+	/// Transport read / receive layer.
 	/// </summary>
-	public abstract class TopicType : ISerializable
+	public interface TransportRead<T>
+		where T : TopicType
 	{
-		/// <inheritdoc/>
-		public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
+		/// <summary>
+		/// Close this instance.
+		/// </summary>
+		void Close();
+
+		/// <summary>
+		/// Read an instance of TopicType from the network.
+		/// </summary>
+		T Read();
 	}
 }
 

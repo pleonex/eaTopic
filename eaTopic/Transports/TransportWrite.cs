@@ -19,13 +19,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using EaTopic.Topics;
 
-namespace eaTopic
+namespace EaTopic.Transports
 {
 	/// <summary>
 	/// Transport layer to write / send data.
 	/// </summary>
-	public interface TransportWrite
+	public interface TransportWrite<T>
+		where T : TopicType
 	{
 		/// <summary>
 		/// Close this instance.
@@ -33,10 +35,10 @@ namespace eaTopic
 		void Close();
 
 		/// <summary>
-		/// Write the specified data.
+		/// Write the specified topic data.
 		/// </summary>
 		/// <param name="data">Topic data to write</param>
-		void Write(TopicType data);
+		void Write(T data);
 	}
 }
 

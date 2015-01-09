@@ -34,6 +34,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transports\TransportWrite.cs" />
     <Compile Include="Topics\TopicType.cs" />
+    <Compile Include="Transports\TransportRead.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
