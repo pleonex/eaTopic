@@ -35,6 +35,7 @@
     <Compile Include="Transports\TransportWrite.cs" />
     <Compile Include="Topics\TopicType.cs" />
     <Compile Include="Transports\TransportRead.cs" />
+    <Compile Include="Transports\UdpMulticastWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

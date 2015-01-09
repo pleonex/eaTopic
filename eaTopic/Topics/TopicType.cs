@@ -26,8 +26,13 @@ namespace EaTopic.Topics
 	/// <summary>
 	/// Topic type.
 	/// </summary>
+	[Serializable]
 	public abstract class TopicType : ISerializable
 	{
+		protected TopicType(SerializationInfo info, StreamingContext context)
+		{
+		}
+
 		/// <inheritdoc/>
 		public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
 	}
