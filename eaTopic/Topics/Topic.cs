@@ -27,7 +27,7 @@ using EaTopic.Transports;
 namespace EaTopic.Topics
 {
 	public class Topic<T> : Entity
-		where T : DataFormatter
+		where T : TopicData
 	{
 		readonly List<Publisher<T>> publishers;
 

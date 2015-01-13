@@ -1,10 +1,10 @@
 ﻿//
-//  Transport.cs
+//  TopicData.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
 //
-//  Copyright (c) 2015 Otupus
+//  Copyright (c) 2015 Benito Palacios Sánchez
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,25 +19,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using EaTopic.Topics;
 
-namespace EaTopic.Transports
+namespace EaTopic.Topics
 {
-	/// <summary>
-	/// Transport layer to write / send data.
-	/// </summary>
-	public interface TransportSender
+	public abstract class TopicData
 	{
-		/// <summary>
-		/// Close this instance.
-		/// </summary>
-		void Close();
+		public abstract TopicType Type { get; }
 
-		/// <summary>
-		/// Write the specified topic data.
-		/// </summary>
-		/// <param name="data">Topic data to write</param>
-		void Write(DataFormatter data);
+		public abstract void SerializeData(DataFormatter formatter);
+		public abstract void DeserializeData(DataFormatter formatter);
+
+		internal DataFormatter CreateFormatter()
+		{
+			return new DataFormatter(Type);
+		}
 	}
 }
 

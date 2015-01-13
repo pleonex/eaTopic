@@ -31,8 +31,7 @@ namespace EaTopic.Transports
 	/// UDP multicast writer.
 	/// Example code from: http://www.jarloo.com/c-udp-multicasting-tutorial/
 	/// </summary>
-	public class UdpMulticastSender<T> : TransportSender<T>
-		where T : DataFormatter
+	public class UdpMulticastSender : TransportSender
 	{
 		IPAddress address;
 		IPEndPoint remotept;
@@ -55,10 +54,10 @@ namespace EaTopic.Transports
 			client.Close();
 		}
 
-		public void Write(T data)
+		public void Write(DataFormatter data)
 		{
 			// Send it
-			byte[] binData = data.SerializeData();
+			byte[] binData = data.Write();
 			client.Send(binData, binData.Length, remotept);
 		}
 	}

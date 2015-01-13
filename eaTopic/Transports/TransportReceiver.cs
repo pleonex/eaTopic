@@ -26,8 +26,7 @@ namespace EaTopic.Transports
 	/// <summary>
 	/// Transport read / receive layer.
 	/// </summary>
-	public interface TransportReceiver<T>
-		where T : DataFormatter
+	public interface TransportReceiver
 	{
 		/// <summary>
 		/// Close this instance.
@@ -38,7 +37,7 @@ namespace EaTopic.Transports
 		/// Read an instance of TopicType from the network.
 		/// </summary>
 		/// <param name="data">Data formatter to deserialize.</param>
-		void Read(T data);
+		void Read(DataFormatter data);
 	}
 }
 

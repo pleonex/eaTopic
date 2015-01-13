@@ -26,14 +26,14 @@ using EaTopic.Topics;
 namespace EaTopic.Publishers
 {
 	public class Publisher<T> : Entity
-		where T: DataFormatter
+		where T: TopicData
 	{
-		readonly List<TransportSender<T>> senders;
+		readonly List<TransportSender> senders;
 		readonly Topic<T> topic;
 
 		internal Publisher(Topic<T> topic)
 		{
-			this.senders = new List<TransportSender<T>>();
+			this.senders = new List<TransportSender>();
 			this.topic  = topic;
 		}
 
@@ -66,7 +66,15 @@ namespace EaTopic.Publishers
 		public void Write(T instance)
 		{
 			foreach (var sender in senders)
-				sender.Write(instance);
+				Write(instance, sender);
+		}
+
+		void Write(T instance, TransportSender sender)
+		{
+			var formatter = instance.CreateFormatter();
+			instance.SerializeData(formatter);
+
+			sender.Write(formatter);
 		}
 	}
 }

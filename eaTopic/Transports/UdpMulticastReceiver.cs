@@ -25,8 +25,7 @@ using System.Net;
 
 namespace EaTopic.Transports
 {
-	public class UdpMulticastReceiver<T> : TransportReceiver<T>
-		where T : DataFormatter
+	public class UdpMulticastReceiver : TransportReceiver
 	{
 		IPAddress address;
 		UdpClient client;
@@ -55,10 +54,10 @@ namespace EaTopic.Transports
 			client.Close();
 		}
 
-		public void Read(T data)
+		public void Read(DataFormatter data)
 		{
 			byte[] binData = client.Receive(ref localEp);
-			data.DeserializeData(binData);
+			data.Read(binData);
 		}
 	}
 }

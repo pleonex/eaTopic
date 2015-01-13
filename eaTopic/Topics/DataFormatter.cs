@@ -19,6 +19,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace EaTopic.Topics
 {
@@ -27,10 +29,42 @@ namespace EaTopic.Topics
 	/// We are not using built-in .NET serialization since we aim to make it compatible
 	/// with other languages.
 	/// </summary>
-	public abstract class DataFormatter
+	public class DataFormatter
 	{
-		public abstract byte[] SerializeData();
-		public abstract void DeserializeData(byte[] data);
+		List<dynamic> entries;
+		TopicType type;
+
+		public DataFormatter(TopicType type)
+		{
+			this.type = type;
+		}
+
+		public byte[] Write()
+		{
+			var stream = new MemoryStream();
+			Write(stream);
+
+			byte[] data = stream.ToArray();
+			stream.Dispose();
+			return data;
+		}
+
+		public void Write(Stream stream)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Read(byte[] data)
+		{
+			MemoryStream stream = new MemoryStream(data);
+			Read(stream);
+			stream.Dispose();
+		}
+
+		public void Read(Stream stream)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
 
