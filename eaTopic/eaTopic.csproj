@@ -40,6 +40,7 @@
     <Compile Include="Publishers\Publisher.cs" />
     <Compile Include="Topics\Topic.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="Topics\TopicType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
