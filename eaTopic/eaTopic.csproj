@@ -37,10 +37,12 @@
     <Compile Include="Transports\TransportReceiver.cs" />
     <Compile Include="Transports\UdpMulticastSender.cs" />
     <Compile Include="Transports\UdpMulticastReceiver.cs" />
+    <Compile Include="Publishers\Publisher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Transports\" />
     <Folder Include="Topics\" />
+    <Folder Include="Publishers\" />
   </ItemGroup>
 </Project>
