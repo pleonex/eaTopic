@@ -1,5 +1,5 @@
 ﻿//
-//  Publisher.cs
+//  Topic.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
@@ -20,53 +20,47 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using EaTopic.Publishers;
 using EaTopic.Transports;
-using EaTopic.Topics;
 
-namespace EaTopic.Publishers
+namespace EaTopic.Topics
 {
-	public class Publisher<T> : Entity
-		where T: DataFormatter
+	public class Topic<T> : Entity
+		where T : DataFormatter
 	{
-		readonly List<TransportSender<T>> senders;
-		readonly Topic<T> topic;
+		readonly List<Publisher<T>> publishers;
 
-		internal Publisher(Topic<T> topic)
+		internal Topic(string name, bool isBuiltin)
 		{
-			this.senders = new List<TransportSender<T>>();
-			this.topic  = topic;
+			Name = name;
+			IsBuiltin  = isBuiltin;
+			publishers = new List<Publisher<T>>();
 		}
 
-		/// <summary>
-		/// Gets or sets the metadata associated with this publisher
-		/// </summary>
-		/// <value>Metadata value.</value>
-		public string Metadata {
+		public string Name {
 			get;
-			set;
+			private set;
 		}
 
-		/// <summary>
-		/// Gets the topic associated.
-		/// </summary>
-		/// <value>The topic where the publisher is.</value>
-		public Topic<T> Topic {
-			get { return topic; }
+		internal bool IsBuiltin {
+			get;
+			private set;
 		}
 
 		public void Dispose()
 		{
+			foreach (var pub in publishers)
+				pub.Dispose();
 
+			publishers.Clear();
 		}
 
-		/// <summary>
-		/// Write / Publish an instance of data.
-		/// </summary>
-		/// <param name="instance">Instance of data to write.</param>
-		public void Write(T instance)
+		public Publisher<T> CreatePublisher()
 		{
-			foreach (var sender in senders)
-				sender.Write(instance);
+			var pub = new Publisher<T>(this);
+			publishers.Add(pub);
+			return pub;
 		}
 	}
 }

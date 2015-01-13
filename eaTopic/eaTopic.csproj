@@ -38,6 +38,8 @@
     <Compile Include="Transports\UdpMulticastSender.cs" />
     <Compile Include="Transports\UdpMulticastReceiver.cs" />
     <Compile Include="Publishers\Publisher.cs" />
+    <Compile Include="Topics\Topic.cs" />
+    <Compile Include="Entity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
