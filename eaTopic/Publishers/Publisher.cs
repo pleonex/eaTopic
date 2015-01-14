@@ -82,10 +82,7 @@ namespace EaTopic.Publishers
 
 		void Write(T instance, TransportSender sender)
 		{
-			var formatter = instance.CreateFormatter();
-			instance.SerializeData(formatter);
-
-			sender.Write(formatter);
+			sender.Write(instance.SerializeData());
 		}
 	}
 }

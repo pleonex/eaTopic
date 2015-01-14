@@ -52,6 +52,8 @@
     <Compile Include="Participants\Participant.cs" />
     <Compile Include="Subscribers\SubscriberInfo.cs" />
     <Compile Include="Publishers\PublisherInfo.cs" />
+    <Compile Include="Participants\Builtin\ParticipantInfo.cs" />
+    <Compile Include="Topics\TopicInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,5 +63,6 @@
     <Folder Include="Topics\Serialization\" />
     <Folder Include="Subscribers\" />
     <Folder Include="Participants\" />
+    <Folder Include="Participants\Builtin\" />
   </ItemGroup>
 </Project>

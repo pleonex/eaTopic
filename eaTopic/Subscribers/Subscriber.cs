@@ -68,8 +68,7 @@ namespace EaTopic.Subscribers
 
 		public void OnReceivedData(DataFormatter formatter)
 		{
-			var instance = new T();
-			instance.DeserializeData(formatter);
+			var instance = TopicData.DeserializeData<T>(formatter);
 
 			if (ReceivedInstance != null)
 				ReceivedInstance(instance);

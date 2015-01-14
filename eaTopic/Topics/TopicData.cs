@@ -29,9 +29,24 @@ namespace EaTopic.Topics
 		public abstract void SerializeData(DataFormatter formatter);
 		public abstract void DeserializeData(DataFormatter formatter);
 
-		internal DataFormatter CreateFormatter()
+		public DataFormatter CreateFormatter()
 		{
 			return new DataFormatter(Type);
+		}
+
+		public DataFormatter SerializeData()
+		{
+			var formatter = CreateFormatter();
+			SerializeData(formatter);
+			return formatter;
+		}
+
+		public static T DeserializeData<T>(DataFormatter formatter)
+			where T : TopicData, new()
+		{
+			var data = new T();
+			data.DeserializeData(formatter);
+			return data;
 		}
 	}
 }
