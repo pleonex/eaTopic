@@ -22,23 +22,29 @@ using System;
 using EaTopic.Publishers;
 using EaTopic.Subscribers;
 using EaTopic.Topics;
+using System.Threading;
 
 namespace EaTopic.Participants.Builtin
 {
 	public class BuiltinTopic
 	{
 		const string Name = "BuiltinTopic";
+		const int PublishPeriod = 1000;
 
 		Topic<ParticipantInfo> topic;
 		Subscriber<ParticipantInfo> subscriber;
 		Publisher<ParticipantInfo> publisher;
+		Timer publishingTimer;
 
 		internal BuiltinTopic(Participant participant)
 		{
 			this.Participant = participant;
 			topic = new Topic<ParticipantInfo>(participant, Name, true);
 			subscriber = topic.CreateSubscriber();
-			publisher  = topic.CreatePublisher();
+			publisher = topic.CreatePublisher();
+
+			var state = new PublishTimeState(participant, publisher);
+			publishingTimer = new Timer(PublishTick, state, 0, PublishPeriod);
 		}
 
 		internal string MulticastAddress {
@@ -50,6 +56,34 @@ namespace EaTopic.Participants.Builtin
 		}
 
 		public Participant Participant { get; private set; }
+
+		public void Dispose()
+		{
+			publishingTimer.Change(Timeout.Infinite, Timeout.Infinite);
+			publishingTimer.Dispose();
+			topic.Dispose();
+		}
+
+		void PublishTick(object state)
+		{
+			var publishState = (PublishTimeState)state;
+
+			publishState.Participant.UpdateInfo();
+			publishState.Publisher.Write(publishState.Participant.Info);
+		}
+
+		class PublishTimeState
+		{
+			public PublishTimeState(Participant participant, Publisher<ParticipantInfo> publisher)
+			{
+				this.Participant = participant;
+				this.Publisher = publisher;
+			}
+
+			public Participant Participant { get; private set; }
+
+			public Publisher<ParticipantInfo> Publisher { get; private set; }
+		}
 	}
 }
 

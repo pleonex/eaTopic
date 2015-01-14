@@ -45,6 +45,11 @@ namespace EaTopic.Participants
 			private set; 
 		}
 
+		internal ParticipantInfo Info {
+			get;
+			private set;
+		}
+
 		public void Dispose()
 		{
 			foreach (var topic in topics)
@@ -59,6 +64,11 @@ namespace EaTopic.Participants
 			var topic = new Topic<T>(this, name, false);
 			topics.Add(topic);
 			return topic;
+		}
+
+		internal void UpdateInfo()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
