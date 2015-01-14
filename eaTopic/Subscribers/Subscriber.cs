@@ -33,18 +33,25 @@ namespace EaTopic.Subscribers
 	{
 		readonly List<TransportReceiver> receivers;
 
-		internal Subscriber(Topic<T> topic)
+		internal Subscriber(Topic<T> topic, string metadata)
 		{
 			receivers = new List<TransportReceiver>();
 			Topic = topic;
+			Metadata = metadata;
+			Info = new SubscriberInfo<T>(this);
 		}
 
 		public string Metadata {
 			get;
-			set;
+			private set;
 		}
 
 		public Topic<T> Topic {
+			get;
+			private set;
+		}
+
+		internal SubscriberInfo<T> Info {
 			get;
 			private set;
 		}

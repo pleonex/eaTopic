@@ -84,9 +84,9 @@ namespace EaTopic.Topics
 			return pub;
 		}
 
-		public Subscriber<T> CreateSubscriber()
+		public Subscriber<T> CreateSubscriber(string metadata = "")
 		{
-			var sub = new Subscriber<T>(this);
+			var sub = new Subscriber<T>(this, metadata);
 			subscribers.Add(sub);
 			return sub;
 		}
