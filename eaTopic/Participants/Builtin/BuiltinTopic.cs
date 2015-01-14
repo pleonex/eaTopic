@@ -1,5 +1,5 @@
 ﻿//
-//  Participant.cs
+//  BuiltinTopic.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
@@ -19,47 +19,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using System.Collections.Generic;
+using EaTopic.Publishers;
+using EaTopic.Subscribers;
 using EaTopic.Topics;
-using EaTopic.Participants.Builtin;
 
-namespace EaTopic.Participants
+namespace EaTopic.Participants.Builtin
 {
-	public class Participant : Entity
+	public class BuiltinTopic
 	{
-		readonly List<Entity> topics;
+		const string Name = "BuiltinTopic";
 
-		public Participant(int domain)
+		Topic<ParticipantInfo> topic;
+		Subscriber<ParticipantInfo> subscriber;
+		Publisher<ParticipantInfo> publisher;
+
+		internal BuiltinTopic(Participant participant)
 		{
-			topics = new List<Entity>();
-			BuiltinTopic = new BuiltinTopic(this);
+			this.Participant = participant;
+			topic = new Topic<ParticipantInfo>(participant, Name, true);
+			subscriber = topic.CreateSubscriber();
+			publisher  = topic.CreatePublisher();
 		}
 
-		public byte Domain {
-			get;
-			private set;
+		internal string MulticastAddress {
+			get { return "239.0.0.225"; }
 		}
 
-		public BuiltinTopic BuiltinTopic { 
-			get;
-			private set; 
+		internal int MulticastPort {
+			get { return 14322 + Participant.Domain; }
 		}
 
-		public void Dispose()
-		{
-			foreach (var topic in topics)
-				topic.Dispose();
-
-			topics.Clear();
-		}
-
-		public Topic<T> CreateTopic<T>(string name)
-			where T : TopicData, new()
-		{
-			var topic = new Topic<T>(this, name, false);
-			topics.Add(topic);
-			return topic;
-		}
+		public Participant Participant { get; private set; }
 	}
 }
 

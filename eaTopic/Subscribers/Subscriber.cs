@@ -22,6 +22,7 @@ using System;
 using EaTopic.Topics;
 using System.Collections.Generic;
 using EaTopic.Transports;
+using EaTopic.Participants.Builtin;
 
 namespace EaTopic.Subscribers
 {
@@ -78,9 +79,10 @@ namespace EaTopic.Subscribers
 		{
 			TransportReceiver recv;
 
-			if (Topic.IsBuiltin)
-				recv = new UdpMulticastReceiver(ip, port);
-			else
+			if (Topic.IsBuiltin) {
+				var topic = Topic.Participant.BuiltinTopic;
+				recv = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
+			} else
 				recv = null;	// TODO
 
 			receivers.Add(recv);

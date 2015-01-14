@@ -54,6 +54,7 @@
     <Compile Include="Publishers\PublisherInfo.cs" />
     <Compile Include="Participants\Builtin\ParticipantInfo.cs" />
     <Compile Include="Topics\TopicInfo.cs" />
+    <Compile Include="Participants\Builtin\BuiltinTopic.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
