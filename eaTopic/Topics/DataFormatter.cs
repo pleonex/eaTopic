@@ -4,7 +4,7 @@
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
 //
-//  Copyright (c) 2015 Otupus
+//  Copyright (c) 2015 Benito Palacios Sánchez
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by

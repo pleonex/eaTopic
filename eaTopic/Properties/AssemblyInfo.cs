@@ -29,7 +29,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Otupus")]
+[assembly: AssemblyCopyright("Benito Palacios Sánchez")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
