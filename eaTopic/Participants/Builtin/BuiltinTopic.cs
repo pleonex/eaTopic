@@ -52,7 +52,7 @@ namespace EaTopic.Participants.Builtin
 		}
 
 		internal int MulticastPort {
-			get { return 14322 + Participant.Domain; }
+			get { return 57152 + Participant.Domain; }
 		}
 
 		public Participant Participant { get; private set; }
