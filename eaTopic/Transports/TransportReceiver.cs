@@ -35,6 +35,8 @@ namespace EaTopic.Transports
 		/// </summary>
 		void Close();
 
+		int Port { get; }
+
 		event ReceivedDataEventHandler ReceivedData;
 
 		void StartReceive(DataFormatter formatter);

@@ -31,17 +31,23 @@ namespace EaTopic.Subscribers
 
 		public SubscriberInfo(dynamic subscriber)
 		{
-			TopicName = subscriber.Topic.Name;
+			TopicName  = subscriber.Topic.Name;
 			Metadadata = subscriber.Metadata;
+			IpAddress  = subscriber.IpAddress;
+			Port = subscriber.Port;
 		}
 
 		public override TopicDataType Type {
-			get { return TopicDataType.FromGeneric<string, string, DateTime>(); }
+			get { return TopicDataType.FromGeneric<string, string, string, int, DateTime>(); }
 		}
 
 		public string Metadadata { get; set; }
 
 		public string TopicName { get ; set; }
+
+		public string IpAddress { get; set; }
+
+		public int Port { get; set; }
 
 		public DateTime InfoCreationDate { get; set; }
 
@@ -50,14 +56,18 @@ namespace EaTopic.Subscribers
 			InfoCreationDate = DateTime.Now;
 			formatter.Set(0, TopicName);
 			formatter.Set(1, Metadadata);
-			formatter.Set(2, InfoCreationDate);
+			formatter.Set(2, IpAddress);
+			formatter.Set(3, Port);
+			formatter.Set(4, InfoCreationDate);
 		}
 
 		public override void DeserializeData(DataFormatter formatter)
 		{
 			TopicName  = formatter.Get(0);
 			Metadadata = formatter.Get(1);
-			InfoCreationDate = formatter.Get(2);
+			IpAddress  = formatter.Get(2);
+			Port = formatter.Get(3);
+			InfoCreationDate = formatter.Get(4);
 		}
 	}
 }

@@ -19,10 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using EaTopic.Topics;
 using System.Collections.Generic;
-using EaTopic.Transports;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using EaTopic.Participants.Builtin;
+using EaTopic.Topics;
+using EaTopic.Transports;
 
 namespace EaTopic.Subscribers
 {
@@ -32,13 +35,18 @@ namespace EaTopic.Subscribers
 	public class Subscriber<T> : Entity
 		where T : TopicData, new()
 	{
-		readonly List<TransportReceiver> receivers;
+		TransportReceiver receiver;
 
 		internal Subscriber(Topic<T> topic, string metadata)
 		{
-			receivers = new List<TransportReceiver>();
 			Topic = topic;
-			Metadata = metadata;
+			Metadata  = metadata;
+			IpAddress = GetLocalIpAddress();
+
+			CreateReceiver();
+			StartToReceive();
+
+			Port = receiver.Port;
 			Info = new SubscriberInfo(this);
 		}
 
@@ -57,12 +65,19 @@ namespace EaTopic.Subscribers
 			private set;
 		}
 
+		internal string IpAddress {
+			get;
+			private set;
+		}
+
+		internal int Port {
+			get;
+			private set;
+		}
+
 		public void Dispose()
 		{
-			foreach (var recv in receivers)
-				recv.Close();
-
-			receivers.Clear();
+			receiver.Close();
 		}
 
 		public event ReceivedInstanceHandleEvent<T> ReceivedInstance;
@@ -75,20 +90,26 @@ namespace EaTopic.Subscribers
 				ReceivedInstance(instance);
 		}
 
-		void CreateReceiver(string ip, int port)
+		void CreateReceiver()
 		{
-			TransportReceiver recv;
-
 			if (Topic.IsBuiltin) {
 				var topic = Topic.Participant.BuiltinTopic;
-				recv = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
+				receiver = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
 			} else
-				recv = null;	// TODO
+				receiver = null;	// TODO
+		}
 
-			receivers.Add(recv);
-
+		void StartToReceive()
+		{
 			var formatter = new DataFormatter(Topic.DataType);
-			recv.StartReceive(formatter);
+			receiver.StartReceive(formatter);
+		}
+
+		static string GetLocalIpAddress()
+		{
+			return Dns.GetHostEntry(Dns.GetHostName()).AddressList
+				.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+				.ToString();
 		}
 	}
 }

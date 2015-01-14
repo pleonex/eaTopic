@@ -43,6 +43,8 @@ namespace EaTopic.Transports
 
 			client.Client.Bind(localEp);
 			client.JoinMulticastGroup(address);
+
+			Port = port;
 		}
 
 		void ConfigureSharePort(int port)
@@ -51,6 +53,11 @@ namespace EaTopic.Transports
 			localEp = new IPEndPoint(IPAddress.Any, port);
 			client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			client.ExclusiveAddressUse = false;
+		}
+
+		public int Port {
+			get;
+			private set;
 		}
 
 		public void Close()
