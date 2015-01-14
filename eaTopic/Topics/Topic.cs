@@ -77,9 +77,9 @@ namespace EaTopic.Topics
 			subscribers.Clear();
 		}
 
-		public Publisher<T> CreatePublisher()
+		public Publisher<T> CreatePublisher(string metadata = "")
 		{
-			var pub = new Publisher<T>(this);
+			var pub = new Publisher<T>(this, metadata);
 			publishers.Add(pub);
 			return pub;
 		}

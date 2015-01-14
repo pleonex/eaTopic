@@ -51,6 +51,7 @@
     <Compile Include="Subscribers\Subscriber.cs" />
     <Compile Include="Participants\Participant.cs" />
     <Compile Include="Subscribers\SubscriberInfo.cs" />
+    <Compile Include="Publishers\PublisherInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -31,19 +31,22 @@ namespace EaTopic.Publishers
 		readonly List<TransportSender> senders;
 		readonly Topic<T> topic;
 
-		internal Publisher(Topic<T> topic)
+		internal Publisher(Topic<T> topic, string metadata)
 		{
 			this.senders = new List<TransportSender>();
 			this.topic  = topic;
+			Metadata    = metadata;
+
+			Info = new PublisherInfo<T>(this);
 		}
 
 		/// <summary>
-		/// Gets or sets the metadata associated with this publisher
+		/// Gets the metadata associated with this publisher
 		/// </summary>
 		/// <value>Metadata value.</value>
 		public string Metadata {
 			get;
-			set;
+			private set;
 		}
 
 		/// <summary>
@@ -52,6 +55,11 @@ namespace EaTopic.Publishers
 		/// <value>The topic where the publisher is.</value>
 		public Topic<T> Topic {
 			get { return topic; }
+		}
+
+		internal PublisherInfo<T> Info {
+			get;
+			private set;
 		}
 
 		public void Dispose()
