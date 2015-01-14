@@ -33,31 +33,30 @@ namespace EaTopic.Tests
 		const string MulticastIp = "239.0.0.222";
 		const int Port = 2222;
 
-		Mock<DataFormatter> formatter;
-		UdpMulticastSender<DataFormatter> sender;
-		UdpMulticastReceiver<DataFormatter> receiver;
+		DataFormatter formatter;
+		UdpMulticastSender sender;
+		UdpMulticastReceiver receiver;
 
 		[SetUp]
 		public void Setup()
 		{
-			formatter = new Mock<DataFormatter>();
-			sender = new UdpMulticastSender<DataFormatter>(MulticastIp, Port);
-			receiver = new UdpMulticastReceiver<DataFormatter>(MulticastIp, Port);
+			formatter = new DataFormatter(new TopicDataType(typeof(byte), typeof(byte)));
+			sender = new UdpMulticastSender(MulticastIp, Port);
+			receiver = new UdpMulticastReceiver(MulticastIp, Port);
 		}
 
 		[Test]
 		public void ReceiveData()
 		{
 			byte[] expected = { 0xCA, 0xFE };
-			formatter.Setup(f => f.SerializeData()).Returns(expected);
-			formatter.Setup(f => f.DeserializeData(
-				It.Is<byte[]>(d => d.SequenceEqual(expected))
-			));
+			formatter[0] = expected[0];
+			formatter[1] = expected[1];
 
-			sender.Write(formatter.Object);
-			receiver.Read(formatter.Object);
+			sender.Write(formatter);
+			receiver.Read(formatter);
 
-			Assert.DoesNotThrow(() => formatter.VerifyAll());
+			Assert.AreEqual(expected[0], formatter[0]);
+			Assert.AreEqual(expected[1], formatter[1]);
 		}
 	}
 }

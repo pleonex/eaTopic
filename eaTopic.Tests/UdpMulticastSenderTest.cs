@@ -34,8 +34,8 @@ namespace EaTopic.Tests
 		const string MulticastIp = "239.0.0.222";
 		const int Port = 2222;
 
-		Mock<DataFormatter> formatter;
-		UdpMulticastSender<DataFormatter> sender;
+		DataFormatter formatter;
+		UdpMulticastSender sender;
 
 		UdpClient client;
 		IPEndPoint localEp;
@@ -43,8 +43,8 @@ namespace EaTopic.Tests
 		[SetUp]
 		public void Setup()
 		{
-			formatter = new Mock<DataFormatter>();
-			sender    = new UdpMulticastSender<DataFormatter>(MulticastIp, Port);
+			formatter = new DataFormatter(new TopicDataType(typeof(byte), typeof(byte)));
+			sender    = new UdpMulticastSender(MulticastIp, Port);
 
 			client = new UdpClient();
 
@@ -60,10 +60,11 @@ namespace EaTopic.Tests
 		[Test]
 		public void WritesData()
 		{
-			byte[] expected = { 0xCA, 0xFE };
+			byte[] expected = { 0x01, 0xCA, 0x01, 0xFE };
 
-			formatter.Setup(f => f.SerializeData()).Returns(new byte[] { 0xCA, 0xFE});
-			sender.Write(formatter.Object);
+			formatter.Set(0, expected[1]);
+			formatter.Set(1, expected[3]);
+			sender.Write(formatter);
 
 			byte[] actual = client.Receive(ref localEp);
 
