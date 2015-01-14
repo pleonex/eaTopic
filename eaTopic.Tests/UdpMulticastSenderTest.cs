@@ -43,7 +43,7 @@ namespace EaTopic.Tests
 		[SetUp]
 		public void Setup()
 		{
-			formatter = new DataFormatter(new TopicDataType(typeof(byte), typeof(byte)));
+			formatter = new DataFormatter(TopicDataType.FromGeneric<byte, byte>());
 			sender    = new UdpMulticastSender(MulticastIp, Port);
 
 			client = new UdpClient();

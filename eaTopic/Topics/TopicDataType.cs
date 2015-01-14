@@ -31,6 +31,59 @@ namespace EaTopic.Topics
 		}
 
 		public Type[] Fields { get; private set; }
+
+		public static TopicDataType FromGeneric<T1>()
+		{
+			return new TopicDataType(typeof(T1));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2>()
+		{
+			return new TopicDataType(typeof(T1), typeof(T2));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3>()
+		{
+			return new TopicDataType(typeof(T1), typeof(T2), typeof(T3));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4>()
+		{
+			return new TopicDataType(typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4, T5>()
+		{
+			return new TopicDataType(
+				typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4, T5, T6>()
+		{
+			return new TopicDataType(
+				typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4, T5, T6, T7>()
+		{
+			return new TopicDataType(
+				typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
+				typeof(T7));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4, T5, T6, T7, T8>()
+		{
+			return new TopicDataType(
+				typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
+				typeof(T7), typeof(T8));
+		}
+
+		public static TopicDataType FromGeneric<T1, T2, T3, T4, T5, T6, T7, T8, T9>()
+		{
+			return new TopicDataType(
+				typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6),
+				typeof(T7), typeof(T8), typeof(T9));
+		}
 	}
 }
 
