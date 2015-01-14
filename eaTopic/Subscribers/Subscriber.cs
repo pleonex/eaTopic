@@ -38,7 +38,7 @@ namespace EaTopic.Subscribers
 			receivers = new List<TransportReceiver>();
 			Topic = topic;
 			Metadata = metadata;
-			Info = new SubscriberInfo<T>(this);
+			Info = new SubscriberInfo(this);
 		}
 
 		public string Metadata {
@@ -51,7 +51,7 @@ namespace EaTopic.Subscribers
 			private set;
 		}
 
-		internal SubscriberInfo<T> Info {
+		internal SubscriberInfo Info {
 			get;
 			private set;
 		}

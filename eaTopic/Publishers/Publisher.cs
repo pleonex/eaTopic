@@ -37,7 +37,7 @@ namespace EaTopic.Publishers
 			this.topic  = topic;
 			Metadata    = metadata;
 
-			Info = new PublisherInfo<T>(this);
+			Info = new PublisherInfo(this);
 		}
 
 		/// <summary>
@@ -57,7 +57,7 @@ namespace EaTopic.Publishers
 			get { return topic; }
 		}
 
-		internal PublisherInfo<T> Info {
+		internal PublisherInfo Info {
 			get;
 			private set;
 		}
