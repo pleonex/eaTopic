@@ -26,7 +26,7 @@ using EaTopic.Topics;
 namespace EaTopic.Publishers
 {
 	public class Publisher<T> : Entity
-		where T: TopicData
+		where T: TopicData, new()
 	{
 		readonly List<TransportSender> senders;
 		readonly Topic<T> topic;

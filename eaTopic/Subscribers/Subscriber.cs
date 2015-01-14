@@ -1,5 +1,5 @@
 ﻿//
-//  Topic.cs
+//  Subscriber.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
@@ -19,62 +19,50 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using EaTopic.Topics;
 using System.Collections.Generic;
-using System.Reflection;
-using EaTopic.Publishers;
-using EaTopic.Subscribers;
 using EaTopic.Transports;
 
-namespace EaTopic.Topics
+namespace EaTopic.Subscribers
 {
-	public class Topic<T> : Entity
+	public class Subscriber<T> : Entity
 		where T : TopicData, new()
 	{
-		readonly List<Publisher<T>> publishers;
-		readonly List<Subscriber<T>> subscribers;
+		readonly List<TransportReceiver> receivers;
 
-		internal Topic(string name, bool isBuiltin)
+		internal Subscriber(Topic<T> topic)
 		{
-			Name = name;
-			IsBuiltin = isBuiltin;
-			publishers  = new List<Publisher<T>>();
-			subscribers = new List<Subscriber<T>>();
+			receivers = new List<TransportReceiver>();
+			Topic = topic;
 		}
 
-		public string Name {
+		public string Metadata {
 			get;
-			private set;
+			set;
 		}
 
-		internal bool IsBuiltin {
+		public Topic<T> Topic {
 			get;
 			private set;
 		}
 
 		public void Dispose()
 		{
-			foreach (var pub in publishers)
-				pub.Dispose();
+			foreach (var recv in receivers)
+				recv.Close();
 
-			foreach (var sub in subscribers)
-				sub.Dispose();
-
-			publishers.Clear();
-			subscribers.Clear();
+			receivers.Clear();
 		}
 
-		public Publisher<T> CreatePublisher()
+		public T Read()
 		{
-			var pub = new Publisher<T>(this);
-			publishers.Add(pub);
-			return pub;
-		}
+			var instance = new T();
 
-		public Subscriber<T> CreateSubscriber()
-		{
-			var sub = new Subscriber<T>(this);
-			subscribers.Add(sub);
-			return sub;
+			var formatter = instance.CreateFormatter();
+			receivers[0].Read(formatter);	// TEMP: Do it async with events for all recv
+			instance.DeserializeData(formatter);
+
+			return instance;
 		}
 	}
 }
