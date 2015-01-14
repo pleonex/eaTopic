@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace EaTopic.Topics
 {
@@ -31,12 +32,31 @@ namespace EaTopic.Topics
 	/// </summary>
 	public class DataFormatter
 	{
-		List<dynamic> entries;
+		dynamic[] entries;
 		TopicDataType type;
 
 		public DataFormatter(TopicDataType type)
 		{
 			this.type = type;
+			entries = new dynamic[type.Fields.Length];
+		}
+
+		public void Set(int i, dynamic obj)
+		{
+			if (obj.GetType() != type.Fields[i])
+				throw new ArgumentException("Types does not match");
+
+			entries[i] = obj;
+		}
+
+		public dynamic Get(int i)
+		{
+			return entries[i];
+		}
+
+		public dynamic this[int index] {
+			get { return Get(index); }
+			set { Set(index, value); }
 		}
 
 		public byte[] Write()
@@ -51,7 +71,8 @@ namespace EaTopic.Topics
 
 		public void Write(Stream stream)
 		{
-			throw new NotImplementedException();
+			foreach (var obj in entries)
+				BinaryEncoder.Encode(obj, stream);
 		}
 
 		public void Read(byte[] data)
@@ -63,8 +84,50 @@ namespace EaTopic.Topics
 
 		public void Read(Stream stream)
 		{
-			throw new NotImplementedException();
+			for (int i = 0; i < entries.Length; i++)
+				entries[i] = BinaryDecoder.Decode(stream);
+		}
+
+		private enum TypeId : byte {
+			Default = 0xFF,
+			Byte = 1,
+		}
+
+		private static class BinaryEncoder {
+			public static void Encode(dynamic value, Stream stream)
+			{
+				TypeId type = Enum.Parse(typeof(TypeId), value.GetType().Name);
+
+				stream.WriteByte((byte)type);
+				switch (type) {
+				case TypeId.Byte:
+					WriteByte(value, stream);
+					break;
+				}
+			}
+
+			static void WriteByte(byte v, Stream stream)
+			{
+				stream.WriteByte(v);
+			}
+		}
+
+		private static class BinaryDecoder {
+			public static dynamic Decode(Stream stream)
+			{
+				TypeId type = (TypeId)ReadByte(stream);
+				switch (type) {
+				case TypeId.Byte:
+					return ReadByte(stream);
+				}
+
+				return null;
+			}
+
+			static byte ReadByte(Stream stream)
+			{
+				return (byte)stream.ReadByte();
+			}
 		}
 	}
 }
-
