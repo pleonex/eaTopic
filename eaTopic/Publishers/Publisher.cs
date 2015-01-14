@@ -56,7 +56,10 @@ namespace EaTopic.Publishers
 
 		public void Dispose()
 		{
+			foreach (var sender in senders)
+				sender.Close();
 
+			senders.Clear();
 		}
 
 		/// <summary>
