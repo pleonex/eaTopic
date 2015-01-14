@@ -25,6 +25,9 @@ using EaTopic.Transports;
 
 namespace EaTopic.Subscribers
 {
+	public delegate void ReceivedInstanceHandleEvent<T>(T instance) 
+		where T : TopicData, new();
+
 	public class Subscriber<T> : Entity
 		where T : TopicData, new()
 	{
@@ -54,15 +57,30 @@ namespace EaTopic.Subscribers
 			receivers.Clear();
 		}
 
-		public T Read()
+		public event ReceivedInstanceHandleEvent<T> ReceivedInstance;
+
+		public void OnReceivedData(DataFormatter formatter)
 		{
 			var instance = new T();
-
-			var formatter = instance.CreateFormatter();
-			receivers[0].Read(formatter);	// TEMP: Do it async with events for all recv
 			instance.DeserializeData(formatter);
 
-			return instance;
+			if (ReceivedInstance != null)
+				ReceivedInstance(instance);
+		}
+
+		void CreateReceiver(string ip, int port)
+		{
+			TransportReceiver recv;
+
+			if (Topic.IsBuiltin)
+				recv = new UdpMulticastReceiver(ip, port);
+			else
+				recv = null;	// TODO
+
+			receivers.Add(recv);
+
+			var formatter = new DataFormatter(Topic.DataType);
+			recv.StartReceive(formatter);
 		}
 	}
 }

@@ -30,6 +30,7 @@ namespace EaTopic.Transports
 		IPAddress address;
 		UdpClient client;
 		IPEndPoint localEp;
+		UdpState state;
 
 		public UdpMulticastReceiver(string multicastIp, int port)
 		{
@@ -38,15 +39,18 @@ namespace EaTopic.Transports
 				throw new ArgumentException("[eaTopic]: FATAL ERROR -> IP is not multicast");
 
 			client = new UdpClient();
+			ConfigureSharePort(port);
 
-			// This allow to reuse the port
+			client.Client.Bind(localEp);
+			client.JoinMulticastGroup(address);
+		}
+
+		void ConfigureSharePort(int port)
+		{
 			client.ExclusiveAddressUse = false;
 			localEp = new IPEndPoint(IPAddress.Any, port);
 			client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			client.ExclusiveAddressUse = false;
-
-			client.Client.Bind(localEp);
-			client.JoinMulticastGroup(address);
 		}
 
 		public void Close()
@@ -54,10 +58,53 @@ namespace EaTopic.Transports
 			client.Close();
 		}
 
-		public void Read(DataFormatter data)
+		public event ReceivedDataEventHandler ReceivedData;
+
+		public void OnReceived(IAsyncResult ar)
 		{
-			byte[] binData = client.Receive(ref localEp);
-			data.Read(binData);
+			var state = (UdpState)ar.AsyncState;
+			IPEndPoint endPoint = state.EndPoint;
+			byte[] binData;
+
+			try {
+				binData = state.Client.EndReceive(ar, ref endPoint);
+			} catch (ObjectDisposedException) {
+				return;
+			}
+
+			if (binData.Length > 0) {
+				state.Formatter.Read(binData);
+
+				if (ReceivedData != null)
+					ReceivedData(state.Formatter);
+			}
+
+			if (!state.Stop)
+				state.LastAsyncResult = state.Client.BeginReceive(OnReceived, state);
+		}
+
+		public void StartReceive(DataFormatter formatter)
+		{
+			state = new UdpState(localEp, client, formatter);
+			state.LastAsyncResult = client.BeginReceive(OnReceived, state);
+		}
+
+		class UdpState
+		{
+			public UdpState(IPEndPoint ep, UdpClient client, DataFormatter formatter)
+			{
+				EndPoint  = ep;
+				Client    = client;
+				Formatter = formatter;
+				Stop = false;
+			}
+
+			public IPEndPoint    EndPoint  { get; private set; }
+			public UdpClient     Client    { get; private set; }
+			public DataFormatter Formatter { get; private set; }
+
+			public bool Stop { get; set; }
+			public IAsyncResult LastAsyncResult { get; set; }
 		}
 	}
 }

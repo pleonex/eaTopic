@@ -41,9 +41,16 @@ namespace EaTopic.Topics
 			Participant = participant;
 			publishers  = new List<Publisher<T>>();
 			subscribers = new List<Subscriber<T>>();
+
+			DataType = new T().Type;
 		}
 
 		public string Name {
+			get;
+			private set;
+		}
+
+		public TopicDataType DataType {
 			get;
 			private set;
 		}

@@ -23,6 +23,8 @@ using EaTopic.Topics;
 
 namespace EaTopic.Transports
 {
+	public delegate void ReceivedDataEventHandler(DataFormatter data);
+
 	/// <summary>
 	/// Transport read / receive layer.
 	/// </summary>
@@ -33,11 +35,9 @@ namespace EaTopic.Transports
 		/// </summary>
 		void Close();
 
-		/// <summary>
-		/// Read an instance of TopicType from the network.
-		/// </summary>
-		/// <param name="data">Data formatter to deserialize.</param>
-		void Read(DataFormatter data);
+		event ReceivedDataEventHandler ReceivedData;
+
+		void StartReceive(DataFormatter formatter);
 	}
 }
 
