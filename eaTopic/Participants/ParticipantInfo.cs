@@ -24,7 +24,7 @@ using EaTopic.Topics;
 using EaTopic.Subscribers;
 using EaTopic.Publishers;
 
-namespace EaTopic.Participants.Builtin
+namespace EaTopic.Participants
 {
 	internal class ParticipantInfo : TopicData
 	{

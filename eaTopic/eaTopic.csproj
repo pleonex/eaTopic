@@ -52,7 +52,7 @@
     <Compile Include="Participants\Participant.cs" />
     <Compile Include="Subscribers\SubscriberInfo.cs" />
     <Compile Include="Publishers\PublisherInfo.cs" />
-    <Compile Include="Participants\Builtin\ParticipantInfo.cs" />
+    <Compile Include="Participants\ParticipantInfo.cs" />
     <Compile Include="Topics\TopicInfo.cs" />
     <Compile Include="Participants\Builtin\BuiltinTopic.cs" />
   </ItemGroup>
