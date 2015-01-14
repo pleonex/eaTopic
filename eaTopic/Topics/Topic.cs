@@ -43,6 +43,7 @@ namespace EaTopic.Topics
 			subscribers = new List<Subscriber<T>>();
 
 			DataType = new T().Type;
+			Info = new TopicInfo(this);
 		}
 
 		public string Name {
@@ -61,6 +62,11 @@ namespace EaTopic.Topics
 		}
 
 		internal bool IsBuiltin {
+			get;
+			private set;
+		}
+
+		internal TopicInfo Info {
 			get;
 			private set;
 		}
