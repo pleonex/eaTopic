@@ -2,7 +2,7 @@
 <p align="center">
 <a href="https://travis-ci.org/Otupus/eaTopic"><img alt="Build Status" src="https://travis-ci.org/Otupus/eaTopic.svg?branch=master" align="left" /></a>
 <a href="http://www.gnu.org/copyleft/gpl.html"><img alt="license" src="https://img.shields.io/badge/license-GPL%20V3-blue.svg?style=flat" /></a>
-<a href="https://github.com/fehmicansaglam/progressed.io"><img alt="progressed.io" src="http://progressed.io/bar/10" align="right" /></a>
+<a href="https://github.com/fehmicansaglam/progressed.io"><img alt="progressed.io" src="http://progressed.io/bar/50" align="right" /></a>
 </p>
 
 <br>
