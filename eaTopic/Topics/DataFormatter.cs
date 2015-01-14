@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EaTopic.Topics.Serialization;
 
 namespace EaTopic.Topics
 {
@@ -34,11 +35,15 @@ namespace EaTopic.Topics
 	{
 		dynamic[] entries;
 		TopicDataType type;
+		DataEncoder encoder;
+		DataDecoder decoder;
 
 		public DataFormatter(TopicDataType type)
 		{
 			this.type = type;
 			entries = new dynamic[type.Fields.Length];
+			encoder = new BinaryEncoder();
+			decoder = new BinaryDecoder();
 		}
 
 		public void Set(int i, dynamic obj)
@@ -72,7 +77,7 @@ namespace EaTopic.Topics
 		public void Write(Stream stream)
 		{
 			foreach (var obj in entries)
-				BinaryEncoder.Encode(obj, stream);
+				encoder.Encode(obj, stream);
 		}
 
 		public void Read(byte[] data)
@@ -85,49 +90,7 @@ namespace EaTopic.Topics
 		public void Read(Stream stream)
 		{
 			for (int i = 0; i < entries.Length; i++)
-				entries[i] = BinaryDecoder.Decode(stream);
-		}
-
-		private enum TypeId : byte {
-			Default = 0xFF,
-			Byte = 1,
-		}
-
-		private static class BinaryEncoder {
-			public static void Encode(dynamic value, Stream stream)
-			{
-				TypeId type = Enum.Parse(typeof(TypeId), value.GetType().Name);
-
-				stream.WriteByte((byte)type);
-				switch (type) {
-				case TypeId.Byte:
-					WriteByte(value, stream);
-					break;
-				}
-			}
-
-			static void WriteByte(byte v, Stream stream)
-			{
-				stream.WriteByte(v);
-			}
-		}
-
-		private static class BinaryDecoder {
-			public static dynamic Decode(Stream stream)
-			{
-				TypeId type = (TypeId)ReadByte(stream);
-				switch (type) {
-				case TypeId.Byte:
-					return ReadByte(stream);
-				}
-
-				return null;
-			}
-
-			static byte ReadByte(Stream stream)
-			{
-				return (byte)stream.ReadByte();
-			}
+				entries[i] = decoder.Decode(stream);
 		}
 	}
 }

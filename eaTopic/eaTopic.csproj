@@ -43,11 +43,17 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Topics\TopicDataType.cs" />
     <Compile Include="Topics\TopicData.cs" />
+    <Compile Include="Topics\Serialization\DataEncoder.cs" />
+    <Compile Include="Topics\Serialization\TypeId.cs" />
+    <Compile Include="Topics\Serialization\DataDecoder.cs" />
+    <Compile Include="Topics\Serialization\BinaryEncoder.cs" />
+    <Compile Include="Topics\Serialization\BinaryDecoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Transports\" />
     <Folder Include="Topics\" />
     <Folder Include="Publishers\" />
+    <Folder Include="Topics\Serialization\" />
   </ItemGroup>
 </Project>
