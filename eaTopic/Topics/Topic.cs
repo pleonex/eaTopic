@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using EaTopic.Participants;
 using EaTopic.Publishers;
 using EaTopic.Subscribers;
 using EaTopic.Transports;
@@ -33,15 +34,21 @@ namespace EaTopic.Topics
 		readonly List<Publisher<T>> publishers;
 		readonly List<Subscriber<T>> subscribers;
 
-		internal Topic(string name, bool isBuiltin)
+		internal Topic(Participant participant, string name, bool isBuiltin)
 		{
 			Name = name;
 			IsBuiltin = isBuiltin;
+			Participant = participant;
 			publishers  = new List<Publisher<T>>();
 			subscribers = new List<Subscriber<T>>();
 		}
 
 		public string Name {
+			get;
+			private set;
+		}
+
+		public Participant Participant {
 			get;
 			private set;
 		}

@@ -49,6 +49,7 @@
     <Compile Include="Topics\Serialization\BinaryEncoder.cs" />
     <Compile Include="Topics\Serialization\BinaryDecoder.cs" />
     <Compile Include="Subscribers\Subscriber.cs" />
+    <Compile Include="Participants\Participant.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -57,5 +58,6 @@
     <Folder Include="Publishers\" />
     <Folder Include="Topics\Serialization\" />
     <Folder Include="Subscribers\" />
+    <Folder Include="Participants\" />
   </ItemGroup>
 </Project>
