@@ -32,9 +32,9 @@ namespace EaTopic.Topics
 	public class DataFormatter
 	{
 		List<dynamic> entries;
-		TopicType type;
+		TopicDataType type;
 
-		public DataFormatter(TopicType type)
+		public DataFormatter(TopicDataType type)
 		{
 			this.type = type;
 		}

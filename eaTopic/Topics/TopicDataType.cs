@@ -22,9 +22,9 @@ using System;
 
 namespace EaTopic.Topics
 {
-	public struct TopicType
+	public struct TopicDataType
 	{
-		public TopicType(params Type[] types)
+		public TopicDataType(params Type[] types)
 			: this()
 		{
 			Fields = types;

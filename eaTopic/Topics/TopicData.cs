@@ -24,7 +24,7 @@ namespace EaTopic.Topics
 {
 	public abstract class TopicData
 	{
-		public abstract TopicType Type { get; }
+		public abstract TopicDataType Type { get; }
 
 		public abstract void SerializeData(DataFormatter formatter);
 		public abstract void DeserializeData(DataFormatter formatter);
