@@ -28,10 +28,51 @@ namespace EaTopic.Topics.Serialization
 		public dynamic Decode(Stream stream)
 		{
 			TypeId type = ReadTypeId(stream);
+			return ReadByTypeId(type, stream);
+		}
 
+		protected Type TypeId2Type(TypeId id)
+		{
+			switch (id) {
+			case TypeId.Byte:   return typeof(Byte);
+			case TypeId.UInt32: return typeof(UInt32);
+			case TypeId.Int32:  return typeof(Int32);
+			case TypeId.String: return typeof(String);
+			case TypeId.Array:  return typeof(Array);
+			case TypeId.DateTime: return typeof(DateTime);
+			case TypeId.TopicDataType: return typeof(TopicDataType);
+			case TypeId.DataFormatter: return typeof(DataFormatter);
+			}
+
+			return null;
+		}
+
+		protected dynamic ReadByTypeId(TypeId type, Stream stream)
+		{
 			switch (type) {
 			case TypeId.Byte:
 				return ReadByte(stream);
+
+			case TypeId.UInt32:
+				return ReadUInt32(stream);
+
+			case TypeId.Int32:
+				return ReadInt32(stream);
+
+			case TypeId.String:
+				return ReadString(stream);
+
+			case TypeId.Array:
+				return ReadArray(stream);
+
+			case TypeId.DateTime:
+				return ReadDateTime(stream);
+
+			case TypeId.TopicDataType:
+				return ReadTopicDataType(stream);
+
+			case TypeId.DataFormatter:
+				return ReadDataFormatter(stream);
 			}
 
 			return null;
@@ -40,6 +81,20 @@ namespace EaTopic.Topics.Serialization
 		public abstract TypeId ReadTypeId(Stream stream);
 
 		public abstract byte ReadByte(Stream stream);
+
+		public abstract uint ReadUInt32(Stream stream);
+
+		public abstract int ReadInt32(Stream stream);
+
+		public abstract string ReadString(Stream stream);
+
+		public abstract dynamic ReadArray(Stream stream);
+
+		public abstract DateTime ReadDateTime(Stream stream);
+
+		public abstract TopicDataType ReadTopicDataType(Stream stream);
+
+		public abstract DataFormatter ReadDataFormatter(Stream stream);
 	}
 }
 
