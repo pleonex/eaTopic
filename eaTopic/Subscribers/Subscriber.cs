@@ -82,7 +82,7 @@ namespace EaTopic.Subscribers
 
 		public event ReceivedInstanceHandleEvent<T> ReceivedInstance;
 
-		public void OnReceivedData(DataFormatter formatter)
+		void OnReceivedData(DataFormatter formatter)
 		{
 			var instance = TopicData.DeserializeData<T>(formatter);
 
@@ -97,6 +97,8 @@ namespace EaTopic.Subscribers
 				receiver = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
 			} else
 				receiver = new TcpUnicastReceiver(IpAddress);
+
+			receiver.ReceivedData += OnReceivedData;
 		}
 
 		void StartToReceive()
