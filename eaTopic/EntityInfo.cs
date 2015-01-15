@@ -1,5 +1,5 @@
 ﻿//
-//  TopicInfo.cs
+//  EntityInfo.cs
 //
 //  Author:
 //       Benito Palacios Sánchez <benito356@gmail.com>
@@ -19,40 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using EaTopic.Topics;
 
-namespace EaTopic.Topics
+namespace EaTopic
 {
-	internal class TopicInfo : EntityInfo
+	internal abstract class EntityInfo : TopicData
 	{
-		public TopicInfo()
-		{
-		}
 
-		public TopicInfo(dynamic topic)
-		{
-			TopicName = topic.Name;
-			TopicType = topic.DataType;
-		}
-
-		public string TopicName { get; set; }
-
-		public TopicDataType TopicType { get; set; }
-
-		public override TopicDataType Type {
-			get { return TopicDataType.FromGeneric<string, TopicDataType>(); }
-		}
-
-		public override void SerializeData(DataFormatter formatter)
-		{
-			formatter[0] = TopicName;
-			formatter[1] = TopicType;
-		}
-
-		public override void DeserializeData(DataFormatter formatter)
-		{
-			TopicName = formatter[0];
-			TopicType = formatter[1];
-		}
 	}
 }
 

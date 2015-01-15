@@ -66,12 +66,12 @@ namespace EaTopic.Topics
 			private set;
 		}
 
-		internal TopicInfo Info {
+		internal override EntityInfo Info {
 			get;
-			private set;
+			set;
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			foreach (var pub in publishers)
 				pub.Dispose();

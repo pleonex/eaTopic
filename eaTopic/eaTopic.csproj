@@ -57,6 +57,7 @@
     <Compile Include="Participants\Builtin\BuiltinTopic.cs" />
     <Compile Include="Transports\TcpUnicastReceiver.cs" />
     <Compile Include="Transports\TcpUnicastSender.cs" />
+    <Compile Include="EntityInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

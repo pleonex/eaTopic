@@ -23,7 +23,7 @@ using EaTopic.Topics;
 
 namespace EaTopic.Publishers
 {
-	public class PublisherInfo : TopicData
+	internal class PublisherInfo : EntityInfo
 	{
 		public PublisherInfo()
 		{

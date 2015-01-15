@@ -69,7 +69,7 @@ namespace EaTopic.Participants.Builtin
 			var publishState = (PublishTimeState)state;
 
 			publishState.Participant.UpdateInfo();
-			publishState.Publisher.Write(publishState.Participant.Info);
+			publishState.Publisher.Write((ParticipantInfo)publishState.Participant.Info);
 		}
 
 		class PublishTimeState

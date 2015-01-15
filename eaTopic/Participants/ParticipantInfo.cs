@@ -26,7 +26,7 @@ using EaTopic.Publishers;
 
 namespace EaTopic.Participants
 {
-	internal class ParticipantInfo : TopicData
+	internal class ParticipantInfo : EntityInfo
 	{
 		public ParticipantInfo()
 		{

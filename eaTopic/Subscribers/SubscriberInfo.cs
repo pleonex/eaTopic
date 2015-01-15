@@ -23,7 +23,7 @@ using EaTopic.Topics;
 
 namespace EaTopic.Subscribers
 {
-	internal class SubscriberInfo : TopicData
+	internal class SubscriberInfo : EntityInfo
 	{
 		public SubscriberInfo()
 		{

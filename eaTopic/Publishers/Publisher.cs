@@ -57,12 +57,12 @@ namespace EaTopic.Publishers
 			get { return topic; }
 		}
 
-		internal PublisherInfo Info {
+		internal override EntityInfo Info {
 			get;
-			private set;
+			set;
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			foreach (var sender in senders)
 				sender.Close();

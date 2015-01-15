@@ -60,9 +60,9 @@ namespace EaTopic.Subscribers
 			private set;
 		}
 
-		internal SubscriberInfo Info {
+		internal override EntityInfo Info {
 			get;
-			private set;
+			set;
 		}
 
 		internal string IpAddress {
@@ -75,7 +75,7 @@ namespace EaTopic.Subscribers
 			private set;
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			receiver.Close();
 		}

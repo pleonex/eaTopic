@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EaTopic.Topics;
 using EaTopic.Participants.Builtin;
 
@@ -33,6 +34,7 @@ namespace EaTopic.Participants
 		{
 			topics = new List<Entity>();
 			BuiltinTopic = new BuiltinTopic(this);
+			Info = new ParticipantInfo { Domain = this.Domain };
 		}
 
 		public byte Domain {
@@ -45,12 +47,12 @@ namespace EaTopic.Participants
 			private set; 
 		}
 
-		internal ParticipantInfo Info {
+		internal override EntityInfo Info {
 			get;
-			private set;
+			set;
 		}
 
-		public void Dispose()
+		public override void Dispose()
 		{
 			foreach (var topic in topics)
 				topic.Dispose();
@@ -68,7 +70,10 @@ namespace EaTopic.Participants
 
 		internal void UpdateInfo()
 		{
-			throw new NotImplementedException();
+			var partInfo = (ParticipantInfo)Info;
+			partInfo.Topics = topics.Select(t => t.Info).Cast<TopicInfo>().ToArray();
+
+			Info = partInfo;
 		}
 	}
 }

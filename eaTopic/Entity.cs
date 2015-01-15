@@ -22,9 +22,11 @@ using System;
 
 namespace EaTopic
 {
-	internal interface Entity
+	public abstract class Entity
 	{
-		void Dispose();
+		public abstract void Dispose();
+
+		internal abstract EntityInfo Info { get; set; }
 	}
 }
 
