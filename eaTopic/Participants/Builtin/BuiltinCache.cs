@@ -117,22 +117,26 @@ namespace EaTopic.Participants.Builtin
 
 			public void AddPublisher(EntityInfo info)
 			{
-				publishers.Add(info);
+				if (!publishers.Any(i => i.Uuid.SequenceEqual(info.Uuid)))
+					publishers.Add(info);
 			}
 
 			public void AddPublishers(EntityInfo[] infos)
 			{
-				publishers.AddRange(infos);
+				foreach (var pub in infos)
+					AddPublisher(pub);
 			}
 
 			public void AddSubscriber(EntityInfo info)
 			{
-				subscribers.Add(info);
+				if (!subscribers.Any(i => i.Uuid.SequenceEqual(info.Uuid)))
+					subscribers.Add(info);
 			}
 
 			public void AddSubscribers(EntityInfo[] infos)
 			{
-				subscribers.AddRange(infos);
+				foreach (var sub in infos)
+					AddSubscriber(sub);
 			}
 		}
 	}
