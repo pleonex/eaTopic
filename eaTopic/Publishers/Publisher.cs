@@ -89,14 +89,17 @@ namespace EaTopic.Publishers
 
 		void Initialize()
 		{
+			var builtinTopic = Topic.Participant.BuiltinTopic;
+
 			if (Topic.IsBuiltin) {
-				var builtinTopic = Topic.Participant.BuiltinTopic;
 				senders.Add(
 					new UdpMulticastSender(
 						builtinTopic.MulticastAddress, builtinTopic.MulticastPort
 					));
 			} else {
-				// TODO: Get list of available subscribers and connect to them
+				foreach (var subInfo in builtinTopic.GetSubscribers(Topic))
+					senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
+
 				// TODO: Add listener to new subscribers
 			}
 		}
