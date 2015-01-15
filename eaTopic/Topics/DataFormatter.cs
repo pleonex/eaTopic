@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EaTopic.Topics.Serialization;
+using System.Net;
 
 namespace EaTopic.Topics
 {
@@ -52,7 +53,7 @@ namespace EaTopic.Topics
 
 		public void Set(int i, dynamic obj)
 		{
-			if (obj.GetType() != type.Fields[i])
+			if (!ValidType(obj, i))
 				throw new ArgumentException("Types does not match");
 
 			entries[i] = obj;
@@ -93,8 +94,18 @@ namespace EaTopic.Topics
 
 		public void Read(Stream stream)
 		{
-			for (int i = 0; i < entries.Length; i++)
-				entries[i] = decoder.Decode(stream);
+			for (int i = 0; i < entries.Length; i++) {
+				dynamic obj = decoder.Decode(stream);
+				if (!ValidType(obj, i))
+					throw new ProtocolViolationException("Reading invalid type");
+
+				entries[i] = obj;
+			}
+		}
+
+		bool ValidType(dynamic obj, int i)
+		{
+			return obj.GetType() == type.Fields[i];
 		}
 	}
 }
