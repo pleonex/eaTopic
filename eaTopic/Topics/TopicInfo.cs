@@ -22,13 +22,13 @@ using System;
 
 namespace EaTopic.Topics
 {
-	internal class TopicInfo : EntityInfo
+	public class TopicInfo : EntityInfo
 	{
 		public TopicInfo()
 		{
 		}
 
-		public TopicInfo(dynamic topic)
+		internal TopicInfo(dynamic topic)
 		{
 			TopicName = topic.Name;
 			TopicType = topic.DataType;

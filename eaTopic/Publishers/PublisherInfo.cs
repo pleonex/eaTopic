@@ -23,13 +23,13 @@ using EaTopic.Topics;
 
 namespace EaTopic.Publishers
 {
-	internal class PublisherInfo : EntityInfo
+	public class PublisherInfo : EntityInfo
 	{
 		public PublisherInfo()
 		{
 		}
 
-		public PublisherInfo(dynamic publisher)
+		internal PublisherInfo(dynamic publisher)
 		{
 			Metadata = publisher.Metadata;
 			TopicName = publisher.Topic.Name;

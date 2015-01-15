@@ -23,13 +23,13 @@ using EaTopic.Topics;
 
 namespace EaTopic.Subscribers
 {
-	internal class SubscriberInfo : EntityInfo
+	public class SubscriberInfo : EntityInfo
 	{
 		public SubscriberInfo()
 		{
 		}
 
-		public SubscriberInfo(dynamic subscriber)
+		internal SubscriberInfo(dynamic subscriber)
 		{
 			TopicName  = subscriber.Topic.Name;
 			Metadadata = subscriber.Metadata;

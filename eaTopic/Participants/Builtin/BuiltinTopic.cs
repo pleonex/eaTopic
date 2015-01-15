@@ -61,6 +61,18 @@ namespace EaTopic.Participants.Builtin
 
 		public Participant Participant { get; private set; }
 
+		public PublisherInfo[] GetPublishers<T>(Topic<T> topic)
+			where T : TopicData, new()
+		{
+			return cache.GetPublishers((TopicInfo)topic.Info);
+		}
+
+		public SubscriberInfo[] GetSubscribers<T>(Topic<T> topic)
+			where T : TopicData, new()
+		{
+			return cache.GetSubscribers((TopicInfo)topic.Info);
+		}
+
 		public void Dispose()
 		{
 			publishingTimer.Change(Timeout.Infinite, Timeout.Infinite);

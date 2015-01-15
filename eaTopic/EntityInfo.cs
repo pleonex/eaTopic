@@ -24,9 +24,9 @@ using EaTopic.Topics;
 
 namespace EaTopic
 {
-	internal abstract class EntityInfo : TopicData
+	public abstract class EntityInfo : TopicData
 	{
-		public EntityInfo()
+		protected EntityInfo()
 		{
 			Uuid = Guid.NewGuid().ToByteArray();
 		}

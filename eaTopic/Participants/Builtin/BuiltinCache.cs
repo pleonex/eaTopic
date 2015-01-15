@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using EaTopic.Publishers;
 using EaTopic.Subscribers;
 using EaTopic.Topics;
 
@@ -43,6 +44,29 @@ namespace EaTopic.Participants.Builtin
 		public byte Domain {
 			get;
 			private set;
+		}
+
+		public PublisherInfo[] GetPublishers(TopicInfo topic)
+		{
+			var key = FindCacheKey(topic);
+			if (key == null)
+				return new PublisherInfo[0];
+
+			return cache[key].Publishers.Cast<PublisherInfo>().ToArray();
+		}
+
+		public SubscriberInfo[] GetSubscribers(TopicInfo topic)
+		{
+			var key = FindCacheKey(topic);
+			if (key == null)
+				return new SubscriberInfo[0];
+
+			return cache[key].Subscribers.Cast<SubscriberInfo>().ToArray();
+		}
+
+		TopicInfo FindCacheKey(TopicInfo topic)
+		{
+			return cache.Keys.FirstOrDefault(t => t.TopicName == topic.TopicName);
 		}
 
 		void OnReceivedInfo(ParticipantInfo instance)
@@ -80,7 +104,7 @@ namespace EaTopic.Participants.Builtin
 			bool noError = true;
 
 			// Search if exists
-			var topicKey = cache.Keys.FirstOrDefault(t => t.TopicName == info.TopicName);
+			var topicKey = FindCacheKey(info);
 
 			// Does not exists, add
 			if (topicKey == null)
