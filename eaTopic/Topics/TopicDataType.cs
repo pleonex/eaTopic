@@ -19,6 +19,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 
 namespace EaTopic.Topics
 {
@@ -31,6 +32,35 @@ namespace EaTopic.Topics
 		}
 
 		public Type[] Fields { get; private set; }
+
+		public static bool operator ==(TopicDataType obj1, TopicDataType obj2)
+		{
+			return obj1.Equals(obj2);
+		}
+
+		public static bool operator !=(TopicDataType obj1, TopicDataType obj2)
+		{
+			return !obj1.Equals(obj2);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != typeof(TopicDataType))
+				return false;
+			TopicDataType other = (TopicDataType)obj;
+			return Fields.SequenceEqual(other.Fields);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked {
+				return (Fields != null ? Fields.GetHashCode() : 0);
+			}
+		}
 
 		public static TopicDataType FromGeneric<T1>()
 		{

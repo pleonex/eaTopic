@@ -33,6 +33,8 @@ namespace EaTopic.Participants.Builtin
 
 		Topic<ParticipantInfo> topic;
 		Subscriber<ParticipantInfo> subscriber;
+		BuiltinCache cache;
+
 		Publisher<ParticipantInfo> publisher;
 		Timer publishingTimer;
 
@@ -42,6 +44,8 @@ namespace EaTopic.Participants.Builtin
 			topic = new Topic<ParticipantInfo>(participant, Name, true);
 			subscriber = topic.CreateSubscriber();
 			publisher = topic.CreatePublisher();
+
+			cache = new BuiltinCache(participant.Domain, subscriber);
 
 			var state = new PublishTimeState(participant, publisher);
 			publishingTimer = new Timer(PublishTick, state, 0, PublishPeriod);
