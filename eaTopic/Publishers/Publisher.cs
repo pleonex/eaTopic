@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using EaTopic.Transports;
 using EaTopic.Topics;
+using EaTopic.Participants.Builtin;
 
 namespace EaTopic.Publishers
 {
@@ -38,6 +39,7 @@ namespace EaTopic.Publishers
 			Metadata    = metadata;
 
 			Info = new PublisherInfo(this);
+			Initialize();
 		}
 
 		/// <summary>
@@ -83,6 +85,20 @@ namespace EaTopic.Publishers
 		void Write(T instance, TransportSender sender)
 		{
 			sender.Write(instance.SerializeData());
+		}
+
+		void Initialize()
+		{
+			if (Topic.IsBuiltin) {
+				var builtinTopic = Topic.Participant.BuiltinTopic;
+				senders.Add(
+					new UdpMulticastSender(
+						builtinTopic.MulticastAddress, builtinTopic.MulticastPort
+					));
+			} else {
+				// TODO: Get list of available subscribers and connect to them
+				// TODO: Add listener to new subscribers
+			}
 		}
 	}
 }
