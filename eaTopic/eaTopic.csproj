@@ -55,6 +55,7 @@
     <Compile Include="Participants\ParticipantInfo.cs" />
     <Compile Include="Topics\TopicInfo.cs" />
     <Compile Include="Participants\Builtin\BuiltinTopic.cs" />
+    <Compile Include="Transports\TcpUnicastReceiver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -87,13 +87,13 @@ namespace EaTopic.Transports
 			}
 
 			if (!state.Stop)
-				state.LastAsyncResult = state.Client.BeginReceive(OnReceived, state);
+				state.Client.BeginReceive(OnReceived, state);
 		}
 
 		public void StartReceive(DataFormatter formatter)
 		{
 			state = new UdpState(localEp, client, formatter);
-			state.LastAsyncResult = client.BeginReceive(OnReceived, state);
+			client.BeginReceive(OnReceived, state);
 		}
 
 		class UdpState
@@ -111,7 +111,6 @@ namespace EaTopic.Transports
 			public DataFormatter Formatter { get; private set; }
 
 			public bool Stop { get; set; }
-			public IAsyncResult LastAsyncResult { get; set; }
 		}
 	}
 }

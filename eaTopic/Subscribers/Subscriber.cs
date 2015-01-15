@@ -96,7 +96,7 @@ namespace EaTopic.Subscribers
 				var topic = Topic.Participant.BuiltinTopic;
 				receiver = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
 			} else
-				receiver = null;	// TODO
+				receiver = new TcpUnicastReceiver(IpAddress);
 		}
 
 		void StartToReceive()
