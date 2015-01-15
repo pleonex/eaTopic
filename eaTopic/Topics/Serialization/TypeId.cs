@@ -24,7 +24,17 @@ namespace EaTopic.Topics.Serialization
 {
 	internal enum TypeId : byte {
 		Default = 0xFF,
-		Byte = 1,
+		Byte   = 0x01,
+		UInt32 = 0x02,
+		Int32  = 0x03,
+		String = 0x04,
+
+		DateTime = 0x20,
+
+		TopicDataType = 0x40,
+		DataFormatter = 0x41,
+
+		Array  = 0x80,
 	}
 }
 

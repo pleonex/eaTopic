@@ -46,6 +46,10 @@ namespace EaTopic.Topics
 			decoder = new BinaryDecoder();
 		}
 
+		public TopicDataType Type {
+			get { return type; }
+		}
+
 		public void Set(int i, dynamic obj)
 		{
 			if (obj.GetType() != type.Fields[i])

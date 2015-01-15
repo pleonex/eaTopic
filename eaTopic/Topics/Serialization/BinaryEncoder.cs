@@ -20,19 +20,75 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.IO;
+using System.Text;
 
 namespace EaTopic.Topics.Serialization
 {
 	internal class BinaryEncoder : DataEncoder
 	{
-		public override void WriteTypeId(TypeId value, Stream stream)
+		void WriteData(byte[] data, Stream stream)
 		{
-			WriteByte((byte)value, stream);
+			stream.Write(data, 0, data.Length);
 		}
 
-		public override void WriteByte(byte value, Stream stream)
+		void WriteDataAndLength(byte[] data, Stream stream)
+		{
+			stream.WriteByte((byte)data.Length);
+			WriteData(data, stream);
+		}
+
+		public override void Write(TypeId value, Stream stream)
+		{
+			Write((byte)value, stream);
+		}
+
+		public override void Write(byte value, Stream stream)
 		{
 			stream.WriteByte(value);
+		}
+
+		public override void Write(uint value, Stream stream)
+		{
+			WriteData(BitConverter.GetBytes(value), stream);
+		}
+
+		public override void Write(int value, Stream stream)
+		{
+			WriteData(BitConverter.GetBytes(value), stream);
+		}
+
+		public override void Write(string value, Stream stream)
+		{
+			WriteDataAndLength(Encoding.UTF8.GetBytes(value), stream);
+		}
+
+		public override void Write(Array value, Stream stream)
+		{
+			Write(GetTypeId(value.GetType().GetElementType()), stream);
+			Write((byte)value.Length, stream);
+
+			foreach (dynamic v in value)
+				Write(v, stream);
+		}
+
+		public override void Write(DateTime value, Stream stream)
+		{
+			// The End of World will be in 2038 :D
+			uint unixTime = (uint)(value.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+			WriteData(BitConverter.GetBytes(unixTime), stream);
+		}
+
+		public override void Write(TopicDataType value, Stream stream)
+		{
+			Write((byte)value.Fields.Length, stream);
+			foreach (var v in value.Fields)
+				Write(GetTypeId(v), stream);
+		}
+
+		public override void Write(DataFormatter value, Stream stream)
+		{
+			Write(value.Type, stream);
+			WriteDataAndLength(value.Write(), stream);
 		}
 	}
 }

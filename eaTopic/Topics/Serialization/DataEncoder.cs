@@ -27,19 +27,40 @@ namespace EaTopic.Topics.Serialization
 	{
 		public void Encode(dynamic value, Stream stream)
 		{
-			TypeId type = Enum.Parse(typeof(TypeId), value.GetType().Name);
-			WriteTypeId(type, stream);
-
-			switch (type) {
-			case TypeId.Byte:
-				WriteByte(value, stream);
-				break;
-			}
+			TypeId type = GetTypeId(value.GetType());
+			Write(type, stream);
+			Write(value, stream);
 		}
 
-		public abstract void WriteTypeId(TypeId value, Stream stream);
+		protected TypeId GetTypeId(Type type)
+		{
+			TypeId id;
 
-		public abstract void WriteByte(byte value, Stream stream);
+			if (type.IsArray)
+				id = TypeId.Array;
+			else
+				id = (TypeId)Enum.Parse(typeof(TypeId), type.Name);
+
+			return id;
+		}
+
+		public abstract void Write(TypeId value, Stream stream);
+
+		public abstract void Write(byte value, Stream stream);
+
+		public abstract void Write(uint value, Stream stream);
+
+		public abstract void Write(int value, Stream stream);
+
+		public abstract void Write(string value, Stream stream);
+
+		public abstract void Write(Array value, Stream stream);
+
+		public abstract void Write(DateTime value, Stream stream);
+
+		public abstract void Write(TopicDataType value, Stream stream);
+
+		public abstract void Write(DataFormatter value, Stream stream);
 	}
 }
 
