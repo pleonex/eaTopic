@@ -25,6 +25,7 @@ using EaTopic.Participants;
 using EaTopic.Publishers;
 using EaTopic.Subscribers;
 using EaTopic.Transports;
+using System.Collections.ObjectModel;
 
 namespace EaTopic.Topics
 {
@@ -59,6 +60,14 @@ namespace EaTopic.Topics
 		public Participant Participant {
 			get;
 			private set;
+		}
+
+		public ReadOnlyCollection<Publisher<T>> Publishers {
+			get { return new ReadOnlyCollection<Publisher<T>>(publishers); }
+		}
+
+		public ReadOnlyCollection<Subscriber<T>> Subscribers {
+			get { return new ReadOnlyCollection<Subscriber<T>>(subscribers); }
 		}
 
 		internal bool IsBuiltin {

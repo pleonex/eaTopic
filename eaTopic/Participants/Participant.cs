@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using EaTopic.Topics;
 using EaTopic.Participants.Builtin;
+using EaTopic.Publishers;
+using EaTopic.Subscribers;
 
 namespace EaTopic.Participants
 {
@@ -72,8 +74,29 @@ namespace EaTopic.Participants
 		{
 			var partInfo = (ParticipantInfo)Info;
 			partInfo.Topics = topics.Select(t => t.Info).Cast<TopicInfo>().ToArray();
-
+			partInfo.Publishers  = topics
+				.SelectMany(t => GetPublishers(t))
+				.Select(pub => pub.Info)
+				.Cast<PublisherInfo>()
+				.ToArray();
+			partInfo.Subscribers = topics
+				.SelectMany(t => GetPublishers(t))
+				.Select(sub => sub.Info)
+				.Cast<SubscriberInfo>()
+				.ToArray();
 			Info = partInfo;
+		}
+
+		internal IEnumerable<Entity> GetPublishers(Entity topic)
+		{
+			dynamic dynTopic = topic;
+			return dynTopic.Publishers;
+		}
+
+		internal IEnumerable<Entity> GetSubscribers(Entity topic)
+		{
+			dynamic dynTopic = topic;
+			return dynTopic.Subscribers;
 		}
 	}
 }
