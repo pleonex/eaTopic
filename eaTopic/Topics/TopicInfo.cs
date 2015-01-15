@@ -39,19 +39,21 @@ namespace EaTopic.Topics
 		public TopicDataType TopicType { get; set; }
 
 		public override TopicDataType Type {
-			get { return TopicDataType.FromGeneric<string, TopicDataType>(); }
+			get { return TopicDataType.FromGeneric<byte[], string, TopicDataType>(); }
 		}
 
 		public override void SerializeData(DataFormatter formatter)
 		{
-			formatter[0] = TopicName;
-			formatter[1] = TopicType;
+			formatter[0] = Uuid;
+			formatter[1] = TopicName;
+			formatter[2] = TopicType;
 		}
 
 		public override void DeserializeData(DataFormatter formatter)
 		{
-			TopicName = formatter[0];
-			TopicType = formatter[1];
+			Uuid = formatter[0];
+			TopicName = formatter[1];
+			TopicType = formatter[2];
 		}
 	}
 }

@@ -42,22 +42,24 @@ namespace EaTopic.Publishers
 		public DateTime InfoCreationDate { get; set; }
 
 		public override TopicDataType Type {
-			get { return TopicDataType.FromGeneric<string, string, DateTime>(); }
+			get { return TopicDataType.FromGeneric<byte[], string, string, DateTime>(); }
 		}
 
 		public override void SerializeData(DataFormatter formatter)
 		{
 			InfoCreationDate = DateTime.UtcNow;
-			formatter[0] = Metadata;
-			formatter[1] = TopicName;
-			formatter[2] = InfoCreationDate;
+			formatter[0] = Uuid;
+			formatter[1] = Metadata;
+			formatter[2] = TopicName;
+			formatter[3] = InfoCreationDate;
 		}
 
 		public override void DeserializeData(DataFormatter formatter)
 		{
-			Metadata  = formatter[0];
-			TopicName = formatter[1];
-			InfoCreationDate = formatter[2];
+			Uuid = formatter[0];
+			Metadata  = formatter[1];
+			TopicName = formatter[2];
+			InfoCreationDate = formatter[3];
 		}
 	}
 }

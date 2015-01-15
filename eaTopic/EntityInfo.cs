@@ -19,13 +19,38 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
+using System.Linq;
 using EaTopic.Topics;
 
 namespace EaTopic
 {
 	internal abstract class EntityInfo : TopicData
 	{
+		public EntityInfo()
+		{
+			Uuid = Guid.NewGuid().ToByteArray();
+		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != typeof(EntityInfo))
+				return false;
+			EntityInfo other = (EntityInfo)obj;
+			return Uuid.SequenceEqual(other.Uuid);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked {
+				return (Uuid != null ? Uuid.GetHashCode() : 0);
+			}
+		}
+
+		public byte[] Uuid { get; protected set; }
 	}
 }
 

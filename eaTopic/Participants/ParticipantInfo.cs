@@ -44,8 +44,8 @@ namespace EaTopic.Participants
 
 		public override TopicDataType Type {
 			get { 
-				return TopicDataType.FromGeneric<uint, DataFormatter[], DataFormatter[],
-					DataFormatter[]>();
+				return TopicDataType.FromGeneric<uint, byte[], DataFormatter[],
+					DataFormatter[], DataFormatter[]>();
 			}
 		}
 
@@ -54,19 +54,21 @@ namespace EaTopic.Participants
 			uint header = (uint)(ProtocolVersion | (Domain << 8));
 
 			formatter[0] = header;
-			formatter[1] = SerializeInfoList(Subscribers);
-			formatter[2] = SerializeInfoList(Publishers);
-			formatter[3] = SerializeInfoList(Topics);
+			formatter[1] = Uuid;
+			formatter[2] = SerializeInfoList(Subscribers);
+			formatter[3] = SerializeInfoList(Publishers);
+			formatter[4] = SerializeInfoList(Topics);
 		}
 
 		public override void DeserializeData(DataFormatter formatter)
 		{
 			uint header = formatter[0];
 			Domain = (byte)((header >> 8) & 0xFF);
+			Uuid = formatter[1];
 
-			Subscribers = DeserializeInfoList<SubscriberInfo>(formatter[1]);
-			Publishers  = DeserializeInfoList<PublisherInfo>(formatter[2]);
-			Topics      = DeserializeInfoList<TopicInfo>(formatter[3]);
+			Subscribers = DeserializeInfoList<SubscriberInfo>(formatter[2]);
+			Publishers  = DeserializeInfoList<PublisherInfo>(formatter[3]);
+			Topics      = DeserializeInfoList<TopicInfo>(formatter[4]);
 		}
 
 		DataFormatter[] SerializeInfoList(TopicData[] infoList)
