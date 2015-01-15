@@ -53,7 +53,7 @@ namespace EaTopic.Subscribers
 
 		public override void SerializeData(DataFormatter formatter)
 		{
-			InfoCreationDate = DateTime.Now;
+			InfoCreationDate = DateTime.UtcNow;
 			formatter.Set(0, TopicName);
 			formatter.Set(1, Metadadata);
 			formatter.Set(2, IpAddress);

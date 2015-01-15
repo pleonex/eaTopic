@@ -47,7 +47,7 @@ namespace EaTopic.Publishers
 
 		public override void SerializeData(DataFormatter formatter)
 		{
-			InfoCreationDate = new DateTime();
+			InfoCreationDate = DateTime.UtcNow;
 			formatter[0] = Metadata;
 			formatter[1] = TopicName;
 			formatter[2] = InfoCreationDate;
