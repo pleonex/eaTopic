@@ -93,8 +93,8 @@ namespace EaTopic.Subscribers
 		void CreateReceiver()
 		{
 			if (Topic.IsBuiltin) {
-				var topic = Topic.Participant.BuiltinTopic;
-				receiver = new UdpMulticastReceiver(topic.MulticastAddress, topic.MulticastPort);
+				receiver = new UdpMulticastReceiver(
+					BuiltinTopic.MulticastAddress, BuiltinTopic.MulticastPort);
 			} else
 				receiver = new TcpUnicastReceiver(IpAddress);
 

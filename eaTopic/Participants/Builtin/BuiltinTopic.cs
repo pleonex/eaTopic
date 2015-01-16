@@ -51,12 +51,12 @@ namespace EaTopic.Participants.Builtin
 			publishingTimer = new Timer(PublishTick, state, 0, PublishPeriod);
 		}
 
-		internal string MulticastAddress {
+		internal static string MulticastAddress {
 			get { return "239.0.0.225"; }
 		}
 
-		internal int MulticastPort {
-			get { return 57152 + Participant.Domain; }
+		internal static int MulticastPort {
+			get { return 57152; }
 		}
 
 		public event PublisherDiscoveredEventHandler PublisherDiscovered {

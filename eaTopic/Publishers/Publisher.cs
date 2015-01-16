@@ -90,14 +90,15 @@ namespace EaTopic.Publishers
 
 		void Initialize()
 		{
-			var builtinTopic = Topic.Participant.BuiltinTopic;
+
 
 			if (Topic.IsBuiltin) {
 				senders.Add(
 					new UdpMulticastSender(
-						builtinTopic.MulticastAddress, builtinTopic.MulticastPort
+						BuiltinTopic.MulticastAddress, BuiltinTopic.MulticastPort
 					));
 			} else {
+				var builtinTopic = Topic.Participant.BuiltinTopic;
 				foreach (var subInfo in builtinTopic.GetSubscribers(Topic))
 					senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
 
