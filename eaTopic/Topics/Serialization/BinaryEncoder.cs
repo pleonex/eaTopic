@@ -82,7 +82,16 @@ namespace EaTopic.Topics.Serialization
 		{
 			Write((byte)value.Fields.Length, stream);
 			foreach (var v in value.Fields)
-				Write(GetTypeId(v), stream);
+				Write(EncodeTypeIdWithArrayType(v), stream);
+		}
+
+		byte EncodeTypeIdWithArrayType(Type type)
+		{
+			byte id = (byte)GetTypeId(type);
+			if (type.IsArray)
+				id |= (byte)GetTypeId(type.GetElementType());
+
+			return id;
 		}
 
 		public override void Write(DataFormatter value, Stream stream)

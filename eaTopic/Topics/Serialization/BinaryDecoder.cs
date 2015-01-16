@@ -88,9 +88,19 @@ namespace EaTopic.Topics.Serialization
 		{
 			var types = new Type[ReadByte(stream)];
 			for (int i = 0; i < types.Length; i++)
-				types[i] = TypeId2Type(ReadTypeId(stream));
+				types[i] = DecodeTypeWithArrayType((byte)ReadTypeId(stream));
 
 			return new TopicDataType(types);
+		}
+
+		Type DecodeTypeWithArrayType(byte typeId)
+		{
+			if (typeId >> 7 == 1) {
+				Type elementType = TypeId2Type((TypeId)(typeId ^ 0x80));
+				return elementType.MakeArrayType();
+			} else {
+				return TypeId2Type((TypeId)(typeId));
+			}
 		}
 
 		public override DataFormatter ReadDataFormatter(Stream stream)
