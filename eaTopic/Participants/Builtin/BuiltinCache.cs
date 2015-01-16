@@ -80,19 +80,19 @@ namespace EaTopic.Participants.Builtin
 			if (instance.Domain != Domain)
 				return;
 
-			foreach (var topic in GetValidTopics(instance.Topics)) {
+			foreach (var topic in GetValidTopicKeys(instance.Topics)) {
 				UpdatePublishers(topic, instance.Publishers);
 				UpdateSubscribers(topic, instance.Subscribers);
 			}
 		}
 
-		TopicInfo[] GetValidTopics(TopicInfo[] infos)
+		TopicInfo[] GetValidTopicKeys(TopicInfo[] infos)
 		{
 			List<TopicInfo> valid = new List<TopicInfo>();
 
 			foreach (var topicInfo in infos) {
 				if (InitializeTopic(topicInfo))
-					valid.Add(topicInfo);
+					valid.Add(FindCacheKey(topicInfo));
 			}
 
 			return valid.ToArray();
