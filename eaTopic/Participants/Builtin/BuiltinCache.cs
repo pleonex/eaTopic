@@ -28,6 +28,9 @@ using EaTopic.Topics;
 
 namespace EaTopic.Participants.Builtin
 {
+	public delegate void PublisherDiscoveredEventHandler(PublisherInfo pubInfo, BuiltinEventArgs e);
+	public delegate void SubscriberDisocveredEventHandler(SubscriberInfo subInfo, BuiltinEventArgs e);
+
 	internal class BuiltinCache
 	{
 		Dictionary<TopicInfo, TopicEntitiesList> cache;
@@ -41,6 +44,9 @@ namespace EaTopic.Participants.Builtin
 			Subscriber.ReceivedInstance += OnReceivedInfo;
 		}
 
+		public event PublisherDiscoveredEventHandler  PublisherDiscovered;
+		public event SubscriberDisocveredEventHandler SubscriberDiscovered;
+
 		public byte Domain {
 			get;
 			private set;
@@ -52,7 +58,7 @@ namespace EaTopic.Participants.Builtin
 			if (key == null)
 				return new PublisherInfo[0];
 
-			return cache[key].Publishers.Cast<PublisherInfo>().ToArray();
+			return cache[key].Publishers.ToArray();
 		}
 
 		public SubscriberInfo[] GetSubscribers(TopicInfo topic)
@@ -61,7 +67,7 @@ namespace EaTopic.Participants.Builtin
 			if (key == null)
 				return new SubscriberInfo[0];
 
-			return cache[key].Subscribers.Cast<SubscriberInfo>().ToArray();
+			return cache[key].Subscribers.ToArray();
 		}
 
 		TopicInfo FindCacheKey(TopicInfo topic)
@@ -74,16 +80,9 @@ namespace EaTopic.Participants.Builtin
 			if (instance.Domain != Domain)
 				return;
 
-			var topicInfos = GetValidTopics(instance.Topics);
-			foreach (var topic in topicInfos) {
-				cache[topic].AddPublishers(
-					instance.Publishers
-					.Where(pub => pub.TopicName == topic.TopicName)
-					.ToArray());
-				cache[topic].AddSubscribers(
-					instance.Subscribers
-					.Where(sub => sub.TopicName == topic.TopicName)
-					.ToArray());
+			foreach (var topic in GetValidTopics(instance.Topics)) {
+				UpdatePublishers(topic, instance.Publishers);
+				UpdateSubscribers(topic, instance.Subscribers);
 			}
 		}
 
@@ -116,6 +115,26 @@ namespace EaTopic.Participants.Builtin
 			return noError;
 		}
 
+		void UpdatePublishers(TopicInfo topic, PublisherInfo[] publishers)
+		{
+			var topicPublishers = publishers.Where(pub => pub.TopicName == topic.TopicName);
+			foreach (var pub in topicPublishers) {
+				var change = cache[topic].SetPublisher(pub);
+				if (PublisherDiscovered != null)
+					PublisherDiscovered(pub, new BuiltinEventArgs(topic, change));
+			}
+		}
+
+		void UpdateSubscribers(TopicInfo topic, SubscriberInfo[] subscribers)
+		{
+			var topicSubscribers = subscribers.Where(sub => sub.TopicName == topic.TopicName);
+			foreach (var sub in topicSubscribers) {
+				var change = cache[topic].SetSubscriber(sub);
+				if (SubscriberDiscovered != null)
+					SubscriberDiscovered(sub, new BuiltinEventArgs(topic, change));
+			}
+		}
+
 		Subscriber<ParticipantInfo> Subscriber {
 			get;
 			set;
@@ -123,44 +142,44 @@ namespace EaTopic.Participants.Builtin
 
 		class TopicEntitiesList
 		{
-			List<EntityInfo> publishers;
-			List<EntityInfo> subscribers;
+			List<PublisherInfo> publishers;
+			List<SubscriberInfo> subscribers;
 
 			public TopicEntitiesList()
 			{
-				publishers = new List<EntityInfo>();
-				subscribers = new List<EntityInfo>();
+				publishers = new List<PublisherInfo>();
+				subscribers = new List<SubscriberInfo>();
 			}
 
-			public ReadOnlyCollection<EntityInfo> Publishers { 
-				get { return new ReadOnlyCollection<EntityInfo>(publishers); }
+			public ReadOnlyCollection<PublisherInfo> Publishers { 
+				get { return new ReadOnlyCollection<PublisherInfo>(publishers); }
 			}
-			public ReadOnlyCollection<EntityInfo> Subscribers {
-				get { return new ReadOnlyCollection<EntityInfo>(subscribers); }
+			public ReadOnlyCollection<SubscriberInfo> Subscribers {
+				get { return new ReadOnlyCollection<SubscriberInfo>(subscribers); }
 			}
 
-			public void AddPublisher(EntityInfo info)
+			public BuiltinEntityChange SetPublisher(PublisherInfo info)
 			{
-				if (!publishers.Any(i => i.Uuid.SequenceEqual(info.Uuid)))
+				int idx = publishers.FindIndex(i => i.Uuid.SequenceEqual(info.Uuid));
+				if (idx == -1) {
 					publishers.Add(info);
+					return BuiltinEntityChange.Added;
+				} else {
+					publishers[idx] = info;
+					return BuiltinEntityChange.Modified;
+				}
 			}
 
-			public void AddPublishers(EntityInfo[] infos)
+			public BuiltinEntityChange SetSubscriber(SubscriberInfo info)
 			{
-				foreach (var pub in infos)
-					AddPublisher(pub);
-			}
-
-			public void AddSubscriber(EntityInfo info)
-			{
-				if (!subscribers.Any(i => i.Uuid.SequenceEqual(info.Uuid)))
+				int idx = subscribers.FindIndex(i => i.Uuid.SequenceEqual(info.Uuid));
+				if (idx == -1) {
 					subscribers.Add(info);
-			}
-
-			public void AddSubscribers(EntityInfo[] infos)
-			{
-				foreach (var sub in infos)
-					AddSubscriber(sub);
+					return BuiltinEntityChange.Added;
+				} else {
+					subscribers[idx] = info;
+					return BuiltinEntityChange.Modified;
+				}
 			}
 		}
 	}

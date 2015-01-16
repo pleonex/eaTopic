@@ -59,6 +59,16 @@ namespace EaTopic.Participants.Builtin
 			get { return 57152 + Participant.Domain; }
 		}
 
+		public event PublisherDiscoveredEventHandler PublisherDiscovered {
+			add    { cache.PublisherDiscovered += value; }
+			remove { cache.PublisherDiscovered -= value; }
+		}
+
+		public event SubscriberDisocveredEventHandler SubscriberDiscovered {
+			add    { cache.SubscriberDiscovered += value; }
+			remove { cache.SubscriberDiscovered -= value; }
+		}
+
 		public Participant Participant { get; private set; }
 
 		public PublisherInfo[] GetPublishers<T>(Topic<T> topic)
