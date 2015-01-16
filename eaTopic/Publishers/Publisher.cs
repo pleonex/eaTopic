@@ -20,9 +20,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
-using EaTopic.Transports;
-using EaTopic.Topics;
 using EaTopic.Participants.Builtin;
+using EaTopic.Subscribers;
+using EaTopic.Topics;
+using EaTopic.Transports;
 
 namespace EaTopic.Publishers
 {
@@ -100,8 +101,17 @@ namespace EaTopic.Publishers
 				foreach (var subInfo in builtinTopic.GetSubscribers(Topic))
 					senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
 
-				// TODO: Add listener to new subscribers
+				builtinTopic.SubscriberDiscovered += OnSubscriberDiscovered;
 			}
+		}
+
+		void OnSubscriberDiscovered(SubscriberInfo subInfo, BuiltinEventArgs e)
+		{
+			if (e.Topic.TopicName != Topic.Name)
+				return;
+
+			if (e.Change == BuiltinEntityChange.Added)
+				senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
 		}
 	}
 }
