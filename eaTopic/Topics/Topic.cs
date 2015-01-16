@@ -75,7 +75,7 @@ namespace EaTopic.Topics
 			private set;
 		}
 
-		internal override EntityInfo Info {
+		public override EntityInfo Info {
 			get;
 			set;
 		}

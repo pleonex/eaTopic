@@ -60,7 +60,7 @@ namespace EaTopic.Publishers
 			get { return topic; }
 		}
 
-		internal override EntityInfo Info {
+		public override EntityInfo Info {
 			get;
 			set;
 		}
@@ -99,7 +99,7 @@ namespace EaTopic.Publishers
 					));
 			} else {
 				var builtinTopic = Topic.Participant.BuiltinTopic;
-				foreach (var subInfo in builtinTopic.GetSubscribers(Topic))
+				foreach (var subInfo in builtinTopic.GetSubscribers((TopicInfo)Topic.Info))
 					senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
 
 				builtinTopic.SubscriberDiscovered += OnSubscriberDiscovered;

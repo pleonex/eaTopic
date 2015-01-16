@@ -26,7 +26,7 @@ namespace EaTopic
 	{
 		public abstract void Dispose();
 
-		internal abstract EntityInfo Info { get; set; }
+		public abstract EntityInfo Info { get; set; }
 	}
 }
 

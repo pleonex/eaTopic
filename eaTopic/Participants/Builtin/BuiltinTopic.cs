@@ -71,16 +71,14 @@ namespace EaTopic.Participants.Builtin
 
 		public Participant Participant { get; private set; }
 
-		public PublisherInfo[] GetPublishers<T>(Topic<T> topic)
-			where T : TopicData, new()
+		public PublisherInfo[] GetPublishers(TopicInfo info)
 		{
-			return cache.GetPublishers((TopicInfo)topic.Info);
+			return cache.GetPublishers(info);
 		}
 
-		public SubscriberInfo[] GetSubscribers<T>(Topic<T> topic)
-			where T : TopicData, new()
+		public SubscriberInfo[] GetSubscribers(TopicInfo info)
 		{
-			return cache.GetSubscribers((TopicInfo)topic.Info);
+			return cache.GetSubscribers(info);
 		}
 
 		public void Dispose()

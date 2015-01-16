@@ -49,7 +49,7 @@ namespace EaTopic.Participants
 			private set; 
 		}
 
-		internal override EntityInfo Info {
+		public override EntityInfo Info {
 			get;
 			set;
 		}
