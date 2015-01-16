@@ -80,7 +80,7 @@ namespace EaTopic.Participants
 				.Cast<PublisherInfo>()
 				.ToArray();
 			partInfo.Subscribers = topics
-				.SelectMany(t => GetPublishers(t))
+				.SelectMany(t => GetSubscribers(t))
 				.Select(sub => sub.Info)
 				.Cast<SubscriberInfo>()
 				.ToArray();
