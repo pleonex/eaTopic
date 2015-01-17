@@ -30,7 +30,7 @@ namespace EaTopic.Participants.Builtin
 {
 	public delegate void TopicDiscoveredEventHandler(TopicInfo topicInfo, BuiltinEventArgs e);
 	public delegate void PublisherDiscoveredEventHandler(PublisherInfo pubInfo, BuiltinEventArgs e);
-	public delegate void SubscriberDisocveredEventHandler(SubscriberInfo subInfo, BuiltinEventArgs e);
+	public delegate void SubscriberDiscoveredEventHandler(SubscriberInfo subInfo, BuiltinEventArgs e);
 
 	internal class BuiltinCache
 	{
@@ -46,7 +46,7 @@ namespace EaTopic.Participants.Builtin
 		}
 
 		public event PublisherDiscoveredEventHandler  PublisherDiscovered;
-		public event SubscriberDisocveredEventHandler SubscriberDiscovered;
+		public event SubscriberDiscoveredEventHandler SubscriberDiscovered;
 		public event TopicDiscoveredEventHandler TopicDiscovered;
 
 		public byte Domain {

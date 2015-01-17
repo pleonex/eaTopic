@@ -70,7 +70,7 @@ namespace EaTopic.Participants.Builtin
 			remove { cache.PublisherDiscovered -= value; }
 		}
 
-		public event SubscriberDisocveredEventHandler SubscriberDiscovered {
+		public event SubscriberDiscoveredEventHandler SubscriberDiscovered {
 			add    { cache.SubscriberDiscovered += value; }
 			remove { cache.SubscriberDiscovered -= value; }
 		}
