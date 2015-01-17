@@ -52,22 +52,22 @@ namespace EaTopic.Participants.Builtin
 			private set;
 		}
 
-		public PublisherInfo[] GetPublishers(TopicInfo topic)
+		public IEnumerable<PublisherInfo> GetPublishers(TopicInfo topic)
 		{
 			var key = FindCacheKey(topic);
 			if (key == null)
 				return new PublisherInfo[0];
 
-			return cache[key].Publishers.ToArray();
+			return cache[key].Publishers;
 		}
 
-		public SubscriberInfo[] GetSubscribers(TopicInfo topic)
+		public IEnumerable<SubscriberInfo> GetSubscribers(TopicInfo topic)
 		{
 			var key = FindCacheKey(topic);
 			if (key == null)
 				return new SubscriberInfo[0];
 
-			return cache[key].Subscribers.ToArray();
+			return cache[key].Subscribers;
 		}
 
 		TopicInfo FindCacheKey(TopicInfo topic)

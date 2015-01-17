@@ -23,6 +23,7 @@ using EaTopic.Publishers;
 using EaTopic.Subscribers;
 using EaTopic.Topics;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace EaTopic.Participants.Builtin
 {
@@ -71,12 +72,12 @@ namespace EaTopic.Participants.Builtin
 
 		public Participant Participant { get; private set; }
 
-		public PublisherInfo[] GetPublishers(TopicInfo info)
+		public IEnumerable<PublisherInfo> GetPublishers(TopicInfo info)
 		{
 			return cache.GetPublishers(info);
 		}
 
-		public SubscriberInfo[] GetSubscribers(TopicInfo info)
+		public IEnumerable<SubscriberInfo> GetSubscribers(TopicInfo info)
 		{
 			return cache.GetSubscribers(info);
 		}
