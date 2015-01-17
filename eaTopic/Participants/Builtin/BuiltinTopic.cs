@@ -60,6 +60,11 @@ namespace EaTopic.Participants.Builtin
 			get { return 57152; }
 		}
 
+		public event TopicDiscoveredEventHandler TopicDiscovered {
+			add    { cache.TopicDiscovered += value; }
+			remove { cache.TopicDiscovered -= value; }
+		}
+
 		public event PublisherDiscoveredEventHandler PublisherDiscovered {
 			add    { cache.PublisherDiscovered += value; }
 			remove { cache.PublisherDiscovered -= value; }
@@ -71,6 +76,11 @@ namespace EaTopic.Participants.Builtin
 		}
 
 		public Participant Participant { get; private set; }
+
+		public IEnumerable<TopicInfo> GetTopics()
+		{
+			return cache.GetTopics();
+		}
 
 		public IEnumerable<PublisherInfo> GetPublishers(TopicInfo info)
 		{

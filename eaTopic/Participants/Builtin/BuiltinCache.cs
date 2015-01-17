@@ -28,6 +28,7 @@ using EaTopic.Topics;
 
 namespace EaTopic.Participants.Builtin
 {
+	public delegate void TopicDiscoveredEventHandler(TopicInfo topicInfo, BuiltinEventArgs e);
 	public delegate void PublisherDiscoveredEventHandler(PublisherInfo pubInfo, BuiltinEventArgs e);
 	public delegate void SubscriberDisocveredEventHandler(SubscriberInfo subInfo, BuiltinEventArgs e);
 
@@ -46,10 +47,16 @@ namespace EaTopic.Participants.Builtin
 
 		public event PublisherDiscoveredEventHandler  PublisherDiscovered;
 		public event SubscriberDisocveredEventHandler SubscriberDiscovered;
+		public event TopicDiscoveredEventHandler TopicDiscovered;
 
 		public byte Domain {
 			get;
 			private set;
+		}
+
+		public IEnumerable<TopicInfo> GetTopics()
+		{
+			return cache.Values.Select(v => v.Topic);
 		}
 
 		public IEnumerable<PublisherInfo> GetPublishers(TopicInfo topic)
@@ -86,7 +93,7 @@ namespace EaTopic.Participants.Builtin
 			}
 		}
 
-		TopicInfo[] GetValidTopicKeys(TopicInfo[] infos)
+		IEnumerable<TopicInfo> GetValidTopicKeys(TopicInfo[] infos)
 		{
 			List<TopicInfo> valid = new List<TopicInfo>();
 
@@ -95,7 +102,7 @@ namespace EaTopic.Participants.Builtin
 					valid.Add(FindCacheKey(topicInfo));
 			}
 
-			return valid.ToArray();
+			return valid;
 		}
 
 		bool InitializeTopic(TopicInfo info)
@@ -107,12 +114,19 @@ namespace EaTopic.Participants.Builtin
 
 			// Does not exists, add
 			if (topicKey == null)
-				cache.Add(info, new TopicEntitiesList());
+				AddTopic(info);
 			// Exists, check if the type is the same
 			else
 				noError = (info.TopicType == topicKey.TopicType);
 
 			return noError;
+		}
+
+		void AddTopic(TopicInfo info)
+		{
+			cache.Add(info, new TopicEntitiesList(info));
+			if (TopicDiscovered != null)
+				TopicDiscovered(info, new BuiltinEventArgs(info, BuiltinEntityChange.Added));
 		}
 
 		void UpdatePublishers(TopicInfo topic, PublisherInfo[] publishers)
@@ -145,10 +159,16 @@ namespace EaTopic.Participants.Builtin
 			List<PublisherInfo> publishers;
 			List<SubscriberInfo> subscribers;
 
-			public TopicEntitiesList()
+			public TopicEntitiesList(TopicInfo topic)
 			{
-				publishers = new List<PublisherInfo>();
+				Topic = topic;
+				publishers  = new List<PublisherInfo>();
 				subscribers = new List<SubscriberInfo>();
+			}
+
+			public TopicInfo Topic {
+				get;
+				private set;
 			}
 
 			public ReadOnlyCollection<PublisherInfo> Publishers { 
