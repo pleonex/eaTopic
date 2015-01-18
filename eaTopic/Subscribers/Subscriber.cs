@@ -36,6 +36,7 @@ namespace EaTopic.Subscribers
 		where T : TopicData, new()
 	{
 		TransportReceiver receiver;
+		Filter filter;
 
 		internal Subscriber(Topic<T> topic, string metadata)
 		{
@@ -82,9 +83,22 @@ namespace EaTopic.Subscribers
 
 		public event ReceivedInstanceHandleEvent<T> ReceivedInstance;
 
+		public void SetLocalFilter(Filter filter)
+		{
+			this.filter = filter;
+		}
+
+		public void RemoveLocalFilter()
+		{
+			this.filter = null;
+		}
+
 		void OnReceivedData(DataFormatter formatter)
 		{
 			var instance = TopicData.DeserializeData<T>(formatter);
+
+			if (filter != null && !filter.IsValid(instance))
+				return;
 
 			if (ReceivedInstance != null)
 				ReceivedInstance(instance);

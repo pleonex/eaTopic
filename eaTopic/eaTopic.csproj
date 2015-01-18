@@ -60,6 +60,8 @@
     <Compile Include="EntityInfo.cs" />
     <Compile Include="Participants\Builtin\BuiltinCache.cs" />
     <Compile Include="Participants\Builtin\BuiltinEventArgs.cs" />
+    <Compile Include="Subscribers\Filter.cs" />
+    <Compile Include="Subscribers\FilterCondition.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
