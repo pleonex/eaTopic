@@ -37,8 +37,10 @@ namespace EaTopic.Transports
 
 		public void Close()
 		{
-			client.GetStream().Close();
-			client.Close();
+			if (client.Connected) {
+				client.GetStream().Close();
+				client.Close();
+			}
 		}
 
 		public void Write(DataFormatter data)
