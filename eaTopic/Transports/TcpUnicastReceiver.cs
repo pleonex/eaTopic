@@ -23,6 +23,9 @@ using EaTopic.Topics;
 using System.Net.Sockets;
 using System.Net;
 using System.Collections.Generic;
+using System.IO;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace EaTopic.Transports
 {
@@ -50,15 +53,18 @@ namespace EaTopic.Transports
 			get { return ((IPEndPoint)receiver.LocalEndpoint).Port; }
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Close()
 		{
-			acceptState.Stop = true;
 			receiver.Stop();
+			foreach (var client in acceptState.ClientList) {
+				if (client.Key.Connected) {
+					client.Key.GetStream().Close();
+					client.Key.Close();
+				}
+			}
 
-			foreach (var client in acceptState.ClientList)
-				client.Close();
-
-			receiver.Server.Close();
+			acceptState.ClientList.Clear();
 		}
 
 		public event ReceivedDataEventHandler ReceivedData;
@@ -71,39 +77,53 @@ namespace EaTopic.Transports
 			receiver.BeginAcceptTcpClient(OnAcceptClient, acceptState);
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		void OnAcceptClient(IAsyncResult ar)
 		{
 			var acceptState = (AcceptState)ar.AsyncState;
-			var receiver = acceptState.Receiver;
 
-			var client = receiver.EndAcceptTcpClient(ar);
-			acceptState.ClientList.Add(client);
+			TcpListener receiver = acceptState.Receiver;
+			TcpClient client;
+			try {
+				client = receiver.EndAcceptTcpClient(ar);
+				if (client == null)
+					return;
 
-			var readState = new ReadState(client.GetStream(), acceptState.Formatter);
+				acceptState.ClientList.TryAdd(client, client);
+				receiver.BeginAcceptTcpClient(OnAcceptClient, acceptState);
+			} catch (ObjectDisposedException) {
+				return;
+			}
+
+			var readState = new ReadState(acceptState.ClientList, client, acceptState.Formatter);
 			client.GetStream().BeginRead(
 				readState.GetBuffer(), 0, readState.BufferSize, OnReceiveData, readState);
 
-			if (!acceptState.Stop)
-				receiver.BeginAcceptTcpClient(OnAcceptClient, acceptState);
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		void OnReceiveData(IAsyncResult ar)
 		{
 			var readState = (ReadState)ar.AsyncState;
+			if (!readState.Client.Connected)
+				return;
 
-			int readSize = readState.Stream.EndRead(ar);
-			readState.Resize(readSize);
-
-			if (readSize > 0) {
-				readState.Formatter.Read(readState.GetBuffer());
-
-				if (ReceivedData != null)
-					ReceivedData(readState.Formatter);
-
-				readState.Resize(readState.BufferSize);
-				readState.Stream.BeginRead(
-					readState.GetBuffer(), 0, readState.BufferSize, OnReceiveData, readState);
+			int readSize = readState.Client.GetStream().EndRead(ar);
+			if (readSize == 0) {
+				TcpClient dummy;
+				readState.ClientList.TryRemove(readState.Client, out dummy);
+				return;
 			}
+				
+			readState.Resize(readSize);
+			readState.Formatter.Read(readState.GetBuffer());
+
+			readState.Resize(readState.BufferSize);
+			readState.Client.GetStream().BeginRead(
+				readState.GetBuffer(), 0, readState.BufferSize, OnReceiveData, readState);
+
+			if (ReceivedData != null)
+				ReceivedData(readState.Formatter);
 		}
 
 		class AcceptState
@@ -111,27 +131,31 @@ namespace EaTopic.Transports
 			public AcceptState(TcpListener receiver)
 			{
 				Receiver = receiver;
-				ClientList = new List<TcpClient>();
-				Stop = false;
+				ClientList = new ConcurrentDictionary<TcpClient, TcpClient>();
 			}
 
 			public TcpListener Receiver { get; private set; }
-			public List<TcpClient> ClientList { get; private set; }
+			public ConcurrentDictionary<TcpClient, TcpClient> ClientList { get; private set; }
 
 			public DataFormatter Formatter { get; set; }
-			public bool Stop { get; set; }
 		}
 
 		class ReadState
 		{
 			byte[] buffer;
 
-			public ReadState(NetworkStream stream, DataFormatter formatter)
+			public ReadState(ConcurrentDictionary<TcpClient, TcpClient> clientList, 
+				TcpClient client, DataFormatter formatter)
 			{
+				ClientList = clientList;
+				Client = client;
 				Formatter = formatter;
-				Stream = stream;
 				buffer = new byte[BufferSize];
 			}
+
+			public ConcurrentDictionary<TcpClient, TcpClient> ClientList { get; private set; }
+
+			public TcpClient Client { get; private set; }
 
 			public DataFormatter Formatter { get; private set; }
 
@@ -141,8 +165,6 @@ namespace EaTopic.Transports
 			{
 				return buffer;
 			}
-
-			public NetworkStream Stream { get; private set; }
 
 			public void Resize(int size)
 			{

@@ -37,6 +37,7 @@ namespace EaTopic.Transports
 
 		public void Close()
 		{
+			client.GetStream().Close();
 			client.Close();
 		}
 
