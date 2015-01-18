@@ -62,6 +62,7 @@
     <Compile Include="Participants\Builtin\BuiltinEventArgs.cs" />
     <Compile Include="Subscribers\Filter.cs" />
     <Compile Include="Subscribers\FilterCondition.cs" />
+    <Compile Include="Topics\Types\ReflectionData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -72,5 +73,6 @@
     <Folder Include="Subscribers\" />
     <Folder Include="Participants\" />
     <Folder Include="Participants\Builtin\" />
+    <Folder Include="Topics\Types\" />
   </ItemGroup>
 </Project>
