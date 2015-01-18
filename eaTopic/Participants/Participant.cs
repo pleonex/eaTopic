@@ -34,6 +34,7 @@ namespace EaTopic.Participants
 
 		public Participant(int domain)
 		{
+			Domain = (byte)domain;
 			topics = new List<Entity>();
 			Info = new ParticipantInfo { Domain = this.Domain };
 			BuiltinTopic = new BuiltinTopic(this);
