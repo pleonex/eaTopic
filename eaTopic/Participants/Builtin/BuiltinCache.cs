@@ -140,6 +140,7 @@ namespace EaTopic.Participants.Builtin
 			}
 
 			var pubToRemove = cache[topic].Publishers
+				.Where(pub => pub.ParticipantUuid.SequenceEqual(partUuid))
 				.Where(pub => !publishers.Any(newPub => newPub.Uuid.SequenceEqual(pub.Uuid)))
 				.ToArray();
 			foreach (var pub in pubToRemove) {
@@ -160,6 +161,7 @@ namespace EaTopic.Participants.Builtin
 			}
 
 			var subToRemove = cache[topic].Subscribers
+				.Where(sub => sub.ParticipantUuid.SequenceEqual(partUuid))
 				.Where(sub => !subscribers.Any(newSub => newSub.Uuid.SequenceEqual(sub.Uuid)))
 				.ToArray();
 			foreach (var sub in subToRemove) {
