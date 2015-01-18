@@ -88,8 +88,8 @@ namespace EaTopic.Participants.Builtin
 				return;
 
 			foreach (var topic in GetValidTopicKeys(instance.Topics)) {
-				UpdatePublishers(topic, instance.Publishers);
-				UpdateSubscribers(topic, instance.Subscribers);
+				UpdatePublishers(topic, instance.Publishers, instance.Uuid);
+				UpdateSubscribers(topic, instance.Subscribers, instance.Uuid);
 			}
 		}
 
@@ -129,23 +129,43 @@ namespace EaTopic.Participants.Builtin
 				TopicDiscovered(info, new BuiltinEventArgs(info, BuiltinEntityChange.Added));
 		}
 
-		void UpdatePublishers(TopicInfo topic, PublisherInfo[] publishers)
+		void UpdatePublishers(TopicInfo topic, PublisherInfo[] publishers, byte[] partUuid)
 		{
 			var topicPublishers = publishers.Where(pub => pub.TopicName == topic.TopicName);
 			foreach (var pub in topicPublishers) {
+				pub.ParticipantUuid = partUuid;
 				var change = cache[topic].SetPublisher(pub);
 				if (PublisherDiscovered != null)
 					PublisherDiscovered(pub, new BuiltinEventArgs(topic, change));
 			}
+
+			var pubToRemove = cache[topic].Publishers
+				.Where(pub => !publishers.Any(newPub => newPub.Uuid.SequenceEqual(pub.Uuid)))
+				.ToArray();
+			foreach (var pub in pubToRemove) {
+				cache[topic].RemovePublisher(pub);
+				if (PublisherDiscovered != null)
+					PublisherDiscovered(pub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
+			}
 		}
 
-		void UpdateSubscribers(TopicInfo topic, SubscriberInfo[] subscribers)
+		void UpdateSubscribers(TopicInfo topic, SubscriberInfo[] subscribers, byte[] partUuid)
 		{
 			var topicSubscribers = subscribers.Where(sub => sub.TopicName == topic.TopicName);
 			foreach (var sub in topicSubscribers) {
+				sub.ParticipantUuid = partUuid;
 				var change = cache[topic].SetSubscriber(sub);
 				if (SubscriberDiscovered != null)
 					SubscriberDiscovered(sub, new BuiltinEventArgs(topic, change));
+			}
+
+			var subToRemove = cache[topic].Subscribers
+				.Where(sub => !subscribers.Any(newSub => newSub.Uuid.SequenceEqual(sub.Uuid)))
+				.ToArray();
+			foreach (var sub in subToRemove) {
+				cache[topic].RemoveSubscriber(sub);
+				if (SubscriberDiscovered != null)
+					SubscriberDiscovered(sub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
 			}
 		}
 
@@ -190,6 +210,12 @@ namespace EaTopic.Participants.Builtin
 				}
 			}
 
+			public void RemovePublisher(PublisherInfo info)
+			{
+				int idx = publishers.FindIndex(i => i.Uuid.SequenceEqual(info.Uuid));
+				publishers.RemoveAt(idx);
+			}
+
 			public BuiltinEntityChange SetSubscriber(SubscriberInfo info)
 			{
 				int idx = subscribers.FindIndex(i => i.Uuid.SequenceEqual(info.Uuid));
@@ -200,6 +226,12 @@ namespace EaTopic.Participants.Builtin
 					subscribers[idx] = info;
 					return BuiltinEntityChange.Modified;
 				}
+			}
+
+			public void RemoveSubscriber(SubscriberInfo info)
+			{
+				int idx = subscribers.FindIndex(i => i.Uuid.SequenceEqual(info.Uuid));
+				subscribers.RemoveAt(idx);
 			}
 		}
 	}

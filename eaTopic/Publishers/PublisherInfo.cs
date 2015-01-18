@@ -33,6 +33,7 @@ namespace EaTopic.Publishers
 		{
 			Metadata = publisher.Metadata;
 			TopicName = publisher.Topic.Name;
+			ParticipantUuid = publisher.Topic.Participant.Info.Uuid;
 		}
 
 		public string Metadata { get; set; }
@@ -40,6 +41,8 @@ namespace EaTopic.Publishers
 		public string TopicName { get; set; }
 
 		public DateTime InfoCreationDate { get; set; }
+
+		public byte[] ParticipantUuid { get; set; }
 
 		public override TopicDataType Type {
 			get { return TopicDataType.FromGeneric<byte[], string, string, DateTime>(); }

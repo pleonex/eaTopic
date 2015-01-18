@@ -35,6 +35,7 @@ namespace EaTopic.Subscribers
 			Metadadata = subscriber.Metadata;
 			IpAddress  = subscriber.IpAddress;
 			Port = subscriber.Port;
+			ParticipantUuid = subscriber.Topic.Participant.Info.Uuid;
 		}
 
 		public override TopicDataType Type {
@@ -50,6 +51,8 @@ namespace EaTopic.Subscribers
 		public int Port { get; set; }
 
 		public DateTime InfoCreationDate { get; set; }
+
+		public byte[] ParticipantUuid { get; set; }
 
 		public override void SerializeData(DataFormatter formatter)
 		{
