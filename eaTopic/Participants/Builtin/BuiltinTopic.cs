@@ -99,6 +99,11 @@ namespace EaTopic.Participants.Builtin
 			topic.Dispose();
 		}
 
+		internal void ForceUpdate()
+		{
+			PublishTick(new PublishTimeState(Participant, publisher));
+		}
+
 		void PublishTick(object state)
 		{
 			var publishState = (PublishTimeState)state;

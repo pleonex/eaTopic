@@ -61,6 +61,7 @@ namespace EaTopic.Participants
 				topic.Dispose();
 
 			topics.Clear();
+			BuiltinTopic.ForceUpdate();
 		}
 
 		public Topic<T> CreateTopic<T>(string name)
