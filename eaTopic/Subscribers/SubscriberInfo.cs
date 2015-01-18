@@ -36,10 +36,12 @@ namespace EaTopic.Subscribers
 			IpAddress  = subscriber.IpAddress;
 			Port = subscriber.Port;
 			ParticipantUuid = subscriber.Topic.Participant.Info.Uuid;
+			Filter = subscriber.Filter;
 		}
 
 		public override TopicDataType Type {
-			get { return TopicDataType.FromGeneric<byte[], string, string, string, int, DateTime>(); }
+			get { return TopicDataType.FromGeneric<byte[], string, string, string, int,
+				DateTime, DataFormatter>(); }
 		}
 
 		public string Metadadata { get; set; }
@@ -54,6 +56,8 @@ namespace EaTopic.Subscribers
 
 		public byte[] ParticipantUuid { get; set; }
 
+		public Filter Filter { get; set; } 
+
 		public override void SerializeData(DataFormatter formatter)
 		{
 			InfoCreationDate = DateTime.UtcNow;
@@ -63,6 +67,7 @@ namespace EaTopic.Subscribers
 			formatter.Set(3, IpAddress);
 			formatter.Set(4, Port);
 			formatter.Set(5, InfoCreationDate);
+			formatter.Set(6, Filter.SerializeData());
 		}
 
 		public override void DeserializeData(DataFormatter formatter)
@@ -73,6 +78,7 @@ namespace EaTopic.Subscribers
 			IpAddress  = formatter.Get(3);
 			Port = formatter.Get(4);
 			InfoCreationDate = formatter.Get(5);
+			Filter = TopicData.DeserializeData<Filter>(formatter.Get(6));
 		}
 	}
 }

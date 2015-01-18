@@ -20,6 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EaTopic.Participants.Builtin;
 using EaTopic.Subscribers;
 using EaTopic.Topics;
@@ -30,12 +31,12 @@ namespace EaTopic.Publishers
 	public class Publisher<T> : Entity
 		where T: TopicData, new()
 	{
-		readonly List<TransportSender> senders;
+		readonly List<RemoteHost> hosts;
 		readonly Topic<T> topic;
 
 		internal Publisher(Topic<T> topic, string metadata)
 		{
-			this.senders = new List<TransportSender>();
+			hosts = new List<RemoteHost>();
 			this.topic  = topic;
 			Metadata    = metadata;
 
@@ -67,10 +68,10 @@ namespace EaTopic.Publishers
 
 		public override void Dispose()
 		{
-			foreach (var sender in senders)
-				sender.Close();
+			foreach (var host in hosts)
+				host.Sender.Close();
 
-			senders.Clear();
+			hosts.Clear();
 		}
 
 		/// <summary>
@@ -79,28 +80,31 @@ namespace EaTopic.Publishers
 		/// <param name="instance">Instance of data to write.</param>
 		public void Write(T instance)
 		{
-			foreach (var sender in senders)
-				Write(instance, sender);
+			foreach (var host in hosts)
+				Write(instance, host);
 		}
 
-		void Write(T instance, TransportSender sender)
+		void Write(T instance, RemoteHost host)
 		{
-			sender.Write(instance.SerializeData());
+			if (host.Info != null && !host.Info.Filter.IsValid(instance))
+				return;
+
+			host.Sender.Write(instance.SerializeData());
 		}
 
 		void Initialize()
 		{
-
-
 			if (Topic.IsBuiltin) {
-				senders.Add(
+				hosts.Add(new RemoteHost(
 					new UdpMulticastSender(
-						BuiltinTopic.MulticastAddress, BuiltinTopic.MulticastPort
-					));
+						BuiltinTopic.MulticastAddress, BuiltinTopic.MulticastPort),
+					null));
 			} else {
 				var builtinTopic = Topic.Participant.BuiltinTopic;
 				foreach (var subInfo in builtinTopic.GetSubscribers((TopicInfo)Topic.Info))
-					senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
+					hosts.Add(new RemoteHost(
+						new TcpUnicastSender(subInfo.IpAddress, subInfo.Port),
+						subInfo));
 
 				builtinTopic.SubscriberDiscovered += OnSubscriberDiscovered;
 			}
@@ -112,7 +116,28 @@ namespace EaTopic.Publishers
 				return;
 
 			if (e.Change == BuiltinEntityChange.Added)
-				senders.Add(new TcpUnicastSender(subInfo.IpAddress, subInfo.Port));
+				hosts.Add(new RemoteHost(
+					new TcpUnicastSender(subInfo.IpAddress, subInfo.Port),
+					subInfo));
+			else if (e.Change == BuiltinEntityChange.Modified) {
+				int idx = hosts.FindIndex(
+					(h) => h.Info != null && h.Info.Uuid.SequenceEqual(subInfo.Uuid));
+
+				if (idx != -1)
+					hosts[idx].Info = subInfo;
+			}
+		}
+
+		class RemoteHost
+		{
+			public RemoteHost(TransportSender sender, SubscriberInfo info)
+			{
+				this.Sender = sender;
+				this.Info = info;
+			}
+
+			public TransportSender Sender { get; private set; }
+			public SubscriberInfo Info { get; set; }
 		}
 	}
 }

@@ -19,24 +19,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using System;
-using EaTopic.Topics;
 using System.Collections.Generic;
+using System.Linq;
+using EaTopic.Topics;
 
 namespace EaTopic.Subscribers
 {
-	public class Filter
+	public class Filter : TopicData
 	{
 		List<FilterExpression> conditions;
-
-		public Filter(TopicDataType dataType)
+			
+		public Filter()
 		{
-			DataType = dataType;
 			conditions = new List<FilterExpression>();
 		}
 
-		public TopicDataType DataType {
-			get;
-			private set;
+		public override TopicDataType Type {
+			get { return TopicDataType.FromGeneric<DataFormatter[]>(); }
 		}
 
 		public void AddCondition(int entry, FilterCondition cond, dynamic op2)
@@ -58,10 +57,25 @@ namespace EaTopic.Subscribers
 			return true;
 		}
 
-		struct FilterExpression
+		public override void SerializeData(DataFormatter formatter)
 		{
+			formatter[0] = conditions.Select(c => c.SerializeData()).ToArray();
+		}
+
+		public override void DeserializeData(DataFormatter formatter)
+		{
+			conditions.Clear();
+			conditions.AddRange(((DataFormatter[])formatter[0])
+				.Select(f => TopicData.DeserializeData<FilterExpression>(f)));
+		}
+
+		class FilterExpression : TopicData
+		{
+			public FilterExpression()
+			{
+			}
+
 			public FilterExpression(int entryIndex, FilterCondition condition, dynamic op2)
-				: this()
 			{
 				this.EntryIndex = entryIndex;
 				this.Condition = condition;
@@ -71,6 +85,28 @@ namespace EaTopic.Subscribers
 			public int EntryIndex { get; private set; }
 			public FilterCondition Condition { get; private set; }
 			public dynamic Operand2 { get; private set; }
+
+			public override TopicDataType Type {
+				get { return TopicDataType.FromGeneric<int, byte, DataFormatter>(); }
+			}
+
+			public override void SerializeData(DataFormatter formatter)
+			{
+				formatter[0] = EntryIndex;
+				formatter[1] = (byte)Condition;
+
+				var dynamicType = new TopicDataType(Operand2.GetType());
+				var opFormatter = new DataFormatter(dynamicType);
+				opFormatter.Set(0, Operand2);
+				formatter[2] = opFormatter;
+			}
+
+			public override void DeserializeData(DataFormatter formatter)
+			{
+				EntryIndex = formatter[0];
+				Condition  = (FilterCondition)formatter[1];
+				Operand2   = ((DataFormatter)formatter[2]).Get(0);
+			}
 		}
 	}
 }

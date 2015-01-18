@@ -22,7 +22,7 @@ using System;
 
 namespace EaTopic.Subscribers
 {
-	public enum FilterCondition {
+	public enum FilterCondition : byte {
 		Equals,
 		Bigger,
 		BiggerOrEquals,

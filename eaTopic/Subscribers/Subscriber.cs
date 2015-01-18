@@ -36,7 +36,6 @@ namespace EaTopic.Subscribers
 		where T : TopicData, new()
 	{
 		TransportReceiver receiver;
-		Filter filter;
 
 		internal Subscriber(Topic<T> topic, string metadata)
 		{
@@ -48,6 +47,7 @@ namespace EaTopic.Subscribers
 			StartToReceive();
 
 			Port = receiver.Port;
+			Filter = new Filter();
 			Info = new SubscriberInfo(this);
 		}
 
@@ -57,6 +57,11 @@ namespace EaTopic.Subscribers
 		}
 
 		public Topic<T> Topic {
+			get;
+			private set;
+		}
+
+		public Filter Filter {
 			get;
 			private set;
 		}
@@ -85,19 +90,27 @@ namespace EaTopic.Subscribers
 
 		public void SetLocalFilter(Filter filter)
 		{
-			this.filter = filter;
+			Filter = filter;
+			((SubscriberInfo)Info).Filter = new Filter();
+		}
+
+		public void SetRemoteFilter(Filter filter)
+		{
+			Filter = new Filter();
+			((SubscriberInfo)Info).Filter = filter;
 		}
 
 		public void RemoveLocalFilter()
 		{
-			this.filter = null;
+			Filter = new Filter();
+			((SubscriberInfo)Info).Filter = Filter;
 		}
 
 		void OnReceivedData(DataFormatter formatter)
 		{
 			var instance = TopicData.DeserializeData<T>(formatter);
 
-			if (filter != null && !filter.IsValid(instance))
+			if (!Filter.IsValid(instance))
 				return;
 
 			if (ReceivedInstance != null)
