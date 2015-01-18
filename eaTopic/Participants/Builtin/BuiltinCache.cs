@@ -34,6 +34,7 @@ namespace EaTopic.Participants.Builtin
 
 	internal class BuiltinCache
 	{
+		const int ExpiredSeconds = 10;
 		Dictionary<TopicInfo, TopicEntitiesList> cache;
 
 		public BuiltinCache(byte domain, Subscriber<ParticipantInfo> subscriber)
@@ -148,6 +149,16 @@ namespace EaTopic.Participants.Builtin
 				if (PublisherDiscovered != null)
 					PublisherDiscovered(pub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
 			}
+
+			DateTime now = DateTime.UtcNow;
+			var pubExpired = cache[topic].Publishers
+				.Where(pub => now.Subtract(pub.InfoCreationDate).TotalSeconds > ExpiredSeconds)
+				.ToArray();
+			foreach (var pub in pubExpired) {
+				cache[topic].RemovePublisher(pub);
+				if (PublisherDiscovered != null)
+					PublisherDiscovered(pub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
+			}
 		}
 
 		void UpdateSubscribers(TopicInfo topic, SubscriberInfo[] subscribers, byte[] partUuid)
@@ -165,6 +176,16 @@ namespace EaTopic.Participants.Builtin
 				.Where(sub => !subscribers.Any(newSub => newSub.Uuid.SequenceEqual(sub.Uuid)))
 				.ToArray();
 			foreach (var sub in subToRemove) {
+				cache[topic].RemoveSubscriber(sub);
+				if (SubscriberDiscovered != null)
+					SubscriberDiscovered(sub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
+			}
+
+			DateTime now = DateTime.UtcNow;
+			var subExpired = cache[topic].Subscribers
+				.Where(sub => now.Subtract(sub.InfoCreationDate).TotalSeconds > ExpiredSeconds)
+				.ToArray();
+			foreach (var sub in subExpired) {
 				cache[topic].RemoveSubscriber(sub);
 				if (SubscriberDiscovered != null)
 					SubscriberDiscovered(sub, new BuiltinEventArgs(topic, BuiltinEntityChange.Removed));
